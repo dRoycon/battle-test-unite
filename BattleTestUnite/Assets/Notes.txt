@@ -1,0 +1,16 @@
+Player:
+-Change invis frames to be based on damage amount
+-Add Invis Frame animation
+-Change Tp radius graphic
+-Add Dash Animation
+-Squish Player while dashing
+
+Ui:
+-Add Tp Bar Animations
+-Change Tp Font
+
+Improve:
+-Remove "timer" shit and replace with Time.realtimesincestart
+
+Add:
+Monster Class

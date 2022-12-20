@@ -636,7 +636,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5652392349836799888, guid: 0b20898cc216fac4a82bb4f37ed54a0b, type: 3}
       propertyPath: dmgCooldown
-      value: 2
+      value: 140
       objectReference: {fileID: 0}
     - target: {fileID: 6904330407877109572, guid: 0b20898cc216fac4a82bb4f37ed54a0b, type: 3}
       propertyPath: m_IsTrigger
@@ -777,6 +777,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4938476215764302176, guid: 125bc31794e50594fa4fc1e6cf2f0187, type: 3}
+      propertyPath: damage
+      value: 30
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 125bc31794e50594fa4fc1e6cf2f0187, type: 3}
 --- !u!1001 &5383598013794027747
@@ -794,10 +798,18 @@ PrefabInstance:
       propertyPath: p
       value: 
       objectReference: {fileID: 1848074140}
+    - target: {fileID: 5383598013260647985, guid: 20fe3b32e1f47ae449384a25b4c90d67, type: 3}
+      propertyPath: spot
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5383598013516449124, guid: 20fe3b32e1f47ae449384a25b4c90d67, type: 3}
       propertyPath: tp
       value: 
       objectReference: {fileID: 2142179705}
+    - target: {fileID: 5383598013666874502, guid: 20fe3b32e1f47ae449384a25b4c90d67, type: 3}
+      propertyPath: m_margin.z
+      value: -71.9105
+      objectReference: {fileID: 0}
     - target: {fileID: 5383598014677780867, guid: 20fe3b32e1f47ae449384a25b4c90d67, type: 3}
       propertyPath: m_Pivot.x
       value: 0

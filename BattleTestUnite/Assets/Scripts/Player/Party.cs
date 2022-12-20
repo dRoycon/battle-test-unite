@@ -7,7 +7,7 @@ public class Party : MonoBehaviour
     public PartyMember[] activePartyMembers { get; private set; } // party members in the party
     public PartyMember[] partyMembers { get; private set; }
 
-    private void Start()
+    private void Awake()
     {
         partyMembers = new PartyMember[4];
         partyMembers[0] = new PartyMember(0, "Kris", 270, 2, 18, 0);    // Kris
@@ -15,6 +15,7 @@ public class Party : MonoBehaviour
         partyMembers[2] = new PartyMember(2, "Ralsei", 250, 2, 16, 16); // Ralsei
         partyMembers[3] = new PartyMember(3, "Noelle", 160, 1, 7, 14);   // Noelle
         activePartyMembers = new PartyMember[PartyAmount];
+        AddMember(partyMembers[0]);
     }
 
     public void AddMember(PartyMember add)
@@ -52,5 +53,16 @@ public class Party : MonoBehaviour
                 activePartyMembers[i + 1] = null;
             }
         }
+    }
+
+    public bool IsPartyDown()
+    {
+        bool res = true;
+        for (int i = 0; i < activePartyMembers.Length; i++)
+        {
+            if (activePartyMembers[i] == null) break;
+            else if (activePartyMembers[i].hp > 0) res = false;
+        }
+        return res;
     }
 }

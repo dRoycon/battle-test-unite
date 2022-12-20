@@ -48,7 +48,7 @@ public class PlayerHealth : MonoBehaviour
             {
                 SetInvisFrames();
             }
-            else
+            else if (party.IsPartyDown())
             {
                 Destroy(gameObject);
             }

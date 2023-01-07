@@ -22,6 +22,10 @@ public class select : MonoBehaviour
         {
             res = -pos;
         }
+        else if (Input.GetKeyDown(Consts.keys["cancel"]))
+        {
+            res = -100;
+        }
         if (res == 0) return pos;
         return res;
     }

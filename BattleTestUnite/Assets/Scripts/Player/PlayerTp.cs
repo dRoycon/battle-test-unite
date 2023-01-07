@@ -6,7 +6,8 @@ using System;
 public class PlayerTp : MonoBehaviour
 {
     public const int MAX_TP = 250;
-    [SerializeField] int tp;
+    private static int TP_DEFEND = 40;
+    [SerializeField] public int tp { get; private set; }
     [SerializeField] SpriteRenderer sr;
     [SerializeField] PlayerHealth p;
     [SerializeField] TpBar ui;
@@ -26,6 +27,10 @@ public class PlayerTp : MonoBehaviour
     {
     }
 
+    public static int Defend(int tp)
+    {
+        return Mathf.Clamp(tp + TP_DEFEND, 0, MAX_TP);
+    }
 
     public void AddTp(float distance)
     {
@@ -38,7 +43,7 @@ public class PlayerTp : MonoBehaviour
             if (timer % (int)speed == 0)
             {
                 tp = Mathf.Clamp(tp + 1, 0, MAX_TP);
-                tpPercent = (int)(100 * (float)((float)tp / (float)MAX_TP));
+                UpdtateTpPercent();
                 timer = 0;
                 sr.enabled = true;
                 ui.CheckTp();
@@ -55,7 +60,15 @@ public class PlayerTp : MonoBehaviour
         sr.enabled = istrue;
     }
 
-    public int Tp() { return tp; }
+    public void SetTp(int _tp)
+    {
+        tp = Mathf.Clamp(_tp, 0, MAX_TP);
+    }
+
+    public void UpdtateTpPercent()
+    {
+        tpPercent = (int)Math.Ceiling(100 * (float)((float)tp / (float)MAX_TP));
+    }
 
     public float TpPercent() { return tpPercent; }
 }

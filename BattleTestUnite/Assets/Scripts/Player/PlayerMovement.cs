@@ -9,6 +9,8 @@ public class PlayerMovement : MonoBehaviour
     private bool enemyTurnActivated;
     private bool enemyTurnDeactivated;
     private bool enemyTurn;
+    private PlayerHealth health;
+    private PlayerTp tp;
 
     [SerializeField] float MAX_SPEED;
     float speed;
@@ -61,6 +63,8 @@ public class PlayerMovement : MonoBehaviour
         dashAmount = DASH_LIMIT;
         dashRechargeTimer = 0;
         dashCooldown = DASH_COOLDOWN;
+        health = GetComponent<PlayerHealth>();
+        tp = GetComponent<PlayerTp>();
     }
 
     private void Start() // Checks if its the player's turn at the start
@@ -279,6 +283,8 @@ public class PlayerMovement : MonoBehaviour
         {
             canMove = true;
             canDetectInput = true;
+            health.canGetHit = true;
+            tp.canGainTp = true;
         }
         else
         {
@@ -291,6 +297,9 @@ public class PlayerMovement : MonoBehaviour
             down = false;
             right = false;
             left = false;
+            health.SetInvisFrames();
+            health.canGetHit = false;
+            tp.canGainTp = false;
             sr.sprite = PlayerSp;
         }
     }

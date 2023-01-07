@@ -19,6 +19,7 @@ public class TpBar : MonoBehaviour
 
     private void Update()
     {
+
     }
 
     public void CheckTp()

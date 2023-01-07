@@ -1285,6 +1285,10 @@ PrefabInstance:
       propertyPath: tp
       value: 
       objectReference: {fileID: 2142179705}
+    - target: {fileID: 5383598013516449126, guid: 20fe3b32e1f47ae449384a25b4c90d67, type: 3}
+      propertyPath: m_TagString
+      value: TpBar
+      objectReference: {fileID: 0}
     - target: {fileID: 5383598013666874502, guid: 20fe3b32e1f47ae449384a25b4c90d67, type: 3}
       propertyPath: m_margin.z
       value: -71.9105

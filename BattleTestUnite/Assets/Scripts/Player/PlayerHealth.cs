@@ -59,7 +59,7 @@ public class PlayerHealth : MonoBehaviour
     /// <summary>
     /// this methos enables or disables invis frames
     /// </summary>
-    private void SetInvisFrames()
+    public void SetInvisFrames()
     {
         if (!invisFrames)
         {

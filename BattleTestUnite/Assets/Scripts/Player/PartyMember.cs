@@ -12,8 +12,10 @@ public class PartyMember
     public float attackPower { get; private set; }
     public float magicPower { get; private set; }
     public bool isTargeted { get; private set; } // if the partyMember is the target of an enemy attack
+    public Color color { get; private set; }
+    public bool hasMagic { get; private set; }
 
-    public PartyMember(int id, string nickname, int maxHp, float defensePower, float attackPower, float magicPower)
+    public PartyMember(int id, string nickname, int maxHp, float defensePower, float attackPower, float magicPower, bool hasMagic, Color color)
     {
         this.id = id;
         this.nickname = nickname;
@@ -21,6 +23,8 @@ public class PartyMember
         this.defensePower = defensePower;
         this.attackPower = attackPower;
         this.magicPower = magicPower;
+        this.color = color;
+        this.hasMagic = hasMagic;
         hp = maxHp;
     }
 }

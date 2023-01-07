@@ -5,6 +5,11 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     #region variables
+    [SerializeField] Party party;
+    private bool enemyTurnActivated;
+    private bool enemyTurnDeactivated;
+    private bool enemyTurn;
+
     [SerializeField] float MAX_SPEED;
     float speed;
 
@@ -58,6 +63,12 @@ public class PlayerMovement : MonoBehaviour
         dashCooldown = DASH_COOLDOWN;
     }
 
+    private void Start() // Checks if its the player's turn at the start
+    {
+        enemyTurn = party.isPlayerTurn;
+        StartTurn();
+    }
+
     void Update()
     {
         PlayerInput();
@@ -68,6 +79,7 @@ public class PlayerMovement : MonoBehaviour
         KeyOutput();
         rb.velocity = new Vector2(horInpt, verInpt).normalized * speed;
         Dash();
+        StartTurn();
     }
 
     /// <summary>
@@ -242,11 +254,9 @@ public class PlayerMovement : MonoBehaviour
     /// <param name="cooldown"></param>
     private void DashRecharge(int cooldown)
     {
-        Debug.Log(dashAmount + "    " + dashRechargeTimer + "    " + cooldown); // DEBUG
         if (dashRechargeTimer >= cooldown)
         {
             dashAmount = Mathf.Clamp(dashAmount + 1, 0, DASH_LIMIT);
-            Debug.Log(dashAmount + "    " + dashRechargeTimer + "    " + cooldown); // DEBUG
             dashRechargeTimer = 0;
             dashCooldown = DASH_COOLDOWN;
             dashkey = false;
@@ -274,12 +284,14 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.velocity = new Vector2(0, 0);
             Awake();
+            dashAmount = DASH_LIMIT;
             canDetectInput = false;
             canMove = false;
             up = false;
             down = false;
             right = false;
             left = false;
+            sr.sprite = PlayerSp;
         }
     }
 
@@ -304,5 +316,34 @@ public class PlayerMovement : MonoBehaviour
     {
         _health.canGetHit = !trigger;
         _tp.canGainTp = !trigger;
+    }
+
+    private void StartTurn() // Checks if its the player's turn
+    {
+        if (party.isPlayerTurn) enemyTurnDeactivated = true;
+        else enemyTurnActivated = true;
+
+        if (enemyTurnActivated)
+        {
+            if (enemyTurn == false)
+            {
+                transform.position = new Vector2(0, 4.8f); // TEMPORARY. enemy attacks should set player pos
+                enemyTurn = true;
+                CanMove(true);
+                enemyTurnActivated = false;
+                enemyTurnDeactivated = false;
+            }
+        }
+        if (enemyTurnDeactivated)
+        {
+            if (enemyTurn == true)
+            {
+                enemyTurn = false;
+                CanMove(false);
+                transform.position = new Vector2(0, 19);
+                enemyTurnDeactivated = false;
+                enemyTurnActivated = false;
+            }
+        }
     }
 }

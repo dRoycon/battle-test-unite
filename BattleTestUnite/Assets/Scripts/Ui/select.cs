@@ -10,14 +10,19 @@ public class select : MonoBehaviour
         int res = 0;
         if (Input.GetKeyDown(Consts.keys["left"]))
         {
-            if (pos > min) res = -1;
-            else res = amt-1;
+            if (pos > min) res = pos-1;
+            else res = amt;
         }
         else if (Input.GetKeyDown(Consts.keys["right"]))
         {
-            if (pos < amt) res = 1;
-            else res = -amt+1;
+            if (pos < amt) res = pos+1;
+            else res = 1;
         }
+        else if (Input.GetKeyDown(Consts.keys["confirm"]))
+        {
+            res = -pos;
+        }
+        if (res == 0) return pos;
         return res;
     }
 }

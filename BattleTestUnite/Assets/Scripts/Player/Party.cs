@@ -4,18 +4,22 @@ using UnityEngine;
 public class Party : MonoBehaviour
 {
     private const int PartyAmount = 3;
+    public bool isPlayerTurn { get; private set; }
     public PartyMember[] activePartyMembers { get; private set; } // party members in the party
     public PartyMember[] partyMembers { get; private set; }
+    public int currentMemberTurn;
 
     private void Awake()
     {
         partyMembers = new PartyMember[4];
-        partyMembers[0] = new PartyMember(0, "Kris", 270, 2, 18, 0);    // Kris
-        partyMembers[1] = new PartyMember(1, "Susie", 340, 2, 23, 8);   // Susie
-        partyMembers[2] = new PartyMember(2, "Ralsei", 250, 2, 16, 16); // Ralsei
-        partyMembers[3] = new PartyMember(3, "Noelle", 160, 1, 7, 14);   // Noelle
+        partyMembers[0] = new PartyMember(0, "Kris", 270, 2, 18, 0, false, Consts.KrisBlue);    // Kris
+        partyMembers[1] = new PartyMember(1, "Susie", 340, 2, 23, 8, true, Consts.SusieMagenta);   // Susie
+        partyMembers[2] = new PartyMember(2, "Ralsei", 250, 2, 16, 16, true, Consts.RalseiGreen); // Ralsei
+        partyMembers[3] = new PartyMember(3, "Noelle", 160, 1, 7, 14, true, Consts.NoelleYellow);   // Noelle
         activePartyMembers = new PartyMember[PartyAmount];
         AddMember(partyMembers[0]);
+        AddMember(partyMembers[1]);
+        AddMember(partyMembers[2]);
     }
 
     public void AddMember(PartyMember add)
@@ -55,6 +59,13 @@ public class Party : MonoBehaviour
         }
     }
 
+    public void PartyTurn(bool trigger)
+    {
+        isPlayerTurn = trigger;
+        if (trigger) currentMemberTurn = 1;
+        else currentMemberTurn = 0;
+    }
+
     public bool IsPartyDown()
     {
         bool res = true;
@@ -64,5 +75,16 @@ public class Party : MonoBehaviour
             else if (activePartyMembers[i].hp > 0) res = false;
         }
         return res;
+    }
+
+    public int CountActiveMembers()
+    {
+        int cnt = 0;
+        for (int i = 0; i < activePartyMembers.Length; i++)
+        {
+            if (activePartyMembers[i] != null) cnt++;
+            else break;
+        }
+        return cnt;
     }
 }

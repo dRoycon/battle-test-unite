@@ -9,6 +9,7 @@ public class PlayerHealth : MonoBehaviour
     public bool canGetHit;
     private SpriteRenderer sr;
     private int timer;
+    public int targeted { get; private set; }
     public Party party { get; private set; }
 
     void Awake()
@@ -43,16 +44,27 @@ public class PlayerHealth : MonoBehaviour
     {
         if (!invisFrames && canGetHit)
         {
-            party.activePartyMembers[0].hp = Mathf.Clamp(party.activePartyMembers[0].hp - damage, 0, party.activePartyMembers[0].maxHp);
-            if (party.activePartyMembers[0].hp > 0)
+            // Select target
+            targeted = Random.Range(0, party.CountActiveMembers());
+            if (party.activePartyMembers[targeted].hp <= 0 && !party.IsPartyDown())
+            {
+                while (party.activePartyMembers[targeted].hp <= 0)
+                {
+                    targeted = Random.Range(0, party.CountActiveMembers());
+                }
+            }
+
+            // damage target and confirm if the party is down
+            party.activePartyMembers[targeted].hp = Mathf.Clamp(party.activePartyMembers[targeted].hp - damage, -999, party.activePartyMembers[targeted].maxHp);
+            if (!party.IsPartyDown())
             {
                 SetInvisFrames();
             }
-            else if (party.IsPartyDown())
+            else
             {
                 Destroy(gameObject);
             }
-            Debug.Log(party.activePartyMembers[0].nickname + ": " + party.activePartyMembers[0].hp+"/"+ party.activePartyMembers[0].maxHp);
+            Debug.Log(party.activePartyMembers[targeted].nickname + ": " + party.activePartyMembers[targeted].hp+"/"+ party.activePartyMembers[targeted].maxHp);
         }
     }
 
@@ -63,7 +75,6 @@ public class PlayerHealth : MonoBehaviour
     {
         if (!invisFrames)
         {
-            //timeWhenHit = (float)Time.realtimeSinceStartupAsDouble;
             invisFrames = true;
             sr.color = Color.gray;
             timer = 0;

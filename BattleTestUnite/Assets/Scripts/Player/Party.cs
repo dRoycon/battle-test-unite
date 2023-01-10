@@ -68,13 +68,12 @@ public class Party : MonoBehaviour
 
     public bool IsPartyDown()
     {
-        bool res = true;
         for (int i = 0; i < activePartyMembers.Length; i++)
         {
             if (activePartyMembers[i] == null) break;
-            else if (activePartyMembers[i].hp > 0) res = false;
+            else if (activePartyMembers[i].hp > 0) return false;
         }
-        return res;
+        return true;
     }
 
     public int CountActiveMembers()

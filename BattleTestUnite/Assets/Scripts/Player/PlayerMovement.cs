@@ -297,7 +297,7 @@ public class PlayerMovement : MonoBehaviour
             down = false;
             right = false;
             left = false;
-            health.SetInvisFrames();
+            if (health.InvisFrames()) health.SetInvisFrames();
             health.canGetHit = false;
             tp.canGainTp = false;
             sr.sprite = PlayerSp;

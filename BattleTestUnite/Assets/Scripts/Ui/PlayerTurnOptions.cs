@@ -23,17 +23,30 @@ public class PlayerTurnOptions : MonoBehaviour
     private bool hasMagic;
     [SerializeField]
     private Sprite magic;
+    [SerializeField]
+    private Sprite magicText;
     Image[] options;
+    Image[] texts;
     [SerializeField]
     private Image fight;
     [SerializeField]
+    private Image fightText;
+    [SerializeField]
     private Image ability;
+    [SerializeField]
+    private Image abilityText;
     [SerializeField]
     private Image item;
     [SerializeField]
+    private Image itemText;
+    [SerializeField]
     private Image spare;
     [SerializeField]
+    private Image spareText;
+    [SerializeField]
     private Image defend;
+    [SerializeField]
+    private Image defendText;
 
     private int opt;
     private int prevOpt;
@@ -51,7 +64,15 @@ public class PlayerTurnOptions : MonoBehaviour
         {
             fight,ability,item,spare,defend
         };
-        if (hasMagic) ability.sprite = magic;
+        texts = new Image[amt]
+        {
+            fightText,abilityText,itemText,spareText,defendText
+        };
+        if (hasMagic)
+        {
+            ability.sprite = magic;
+            abilityText.sprite = magicText;
+        }
         playerTurn = charUi.canMove;
         player = GameObject.FindGameObjectWithTag("Player");
         tp = player.GetComponent<PlayerTp>();
@@ -94,6 +115,8 @@ public class PlayerTurnOptions : MonoBehaviour
                 {
                     options[prevOpt - 1].color = Consts.StaticOrange;
                     options[opt - 1].color = Consts.NoelleYellow;
+                    texts[prevOpt - 1].enabled = false;
+                    texts[opt - 1].enabled = true;
                 }
                 else if (opt > -amt - 1)
                 {
@@ -130,6 +153,7 @@ public class PlayerTurnOptions : MonoBehaviour
                             break;
                     }
                     options[(opt * -1) - 1].color = Consts.StaticOrange;
+                    texts[(opt * -1) - 1].enabled = false;
                     opt = 1;
                     if (charUi.party.CountActiveMembers() - 1 > spot)
                     {
@@ -157,6 +181,7 @@ public class PlayerTurnOptions : MonoBehaviour
                     }
                     timer = 0;
                     options[prevOpt - 1].color = Consts.StaticOrange;
+                    texts[prevOpt - 1].enabled = false;
                     opt = 1;
                     charUi.party.currentMemberTurn = spot;
                     tp.UpdtateTpPercent();

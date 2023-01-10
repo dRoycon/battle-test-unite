@@ -11,7 +11,6 @@ public class PartyMember
     public float defensePower { get; private set; }
     public float attackPower { get; private set; }
     public float magicPower { get; private set; }
-    public bool isTargeted { get; private set; } // if the partyMember is the target of an enemy attack
     public Color color { get; private set; }
     public bool hasMagic { get; private set; }
 

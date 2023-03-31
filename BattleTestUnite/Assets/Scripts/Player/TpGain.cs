@@ -9,16 +9,9 @@ public class TpGain : MonoBehaviour
     bool inTrigger;
     Collider2D other;
 
-    // Start is called before the first frame update
     void Start()
     {
         if (frmPerTp <= 0) frmPerTp = 1;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     private void FixedUpdate()

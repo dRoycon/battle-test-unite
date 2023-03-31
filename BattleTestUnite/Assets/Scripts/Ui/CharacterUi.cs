@@ -7,7 +7,7 @@ public class CharacterUi : MonoBehaviour
 {
     [SerializeField] public int spot;
     [SerializeField] private TextMeshProUGUI nickname;
-    [SerializeField] public Party party;
+    [SerializeField] public PlayerParty party;
     public bool canMove;
 
     private void Start()
@@ -17,7 +17,7 @@ public class CharacterUi : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (party.isPlayerTurn) canMove = true;
+        if (party.isTurn) canMove = true;
         else canMove = false;
     }
 }

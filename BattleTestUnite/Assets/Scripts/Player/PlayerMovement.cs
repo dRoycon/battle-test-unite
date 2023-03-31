@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     #region variables
-    [SerializeField] Party party;
+    [SerializeField] PlayerParty party;
     private bool enemyTurnActivated;
     private bool enemyTurnDeactivated;
     private bool enemyTurn;
@@ -69,7 +69,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start() // Checks if its the player's turn at the start
     {
-        enemyTurn = party.isPlayerTurn;
+        enemyTurn = party.isTurn;
         StartTurn();
     }
 
@@ -329,7 +329,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void StartTurn() // Checks if its the player's turn
     {
-        if (party.isPlayerTurn) enemyTurnDeactivated = true;
+        if (party.isTurn) enemyTurnDeactivated = true;
         else enemyTurnActivated = true;
 
         if (enemyTurnActivated)

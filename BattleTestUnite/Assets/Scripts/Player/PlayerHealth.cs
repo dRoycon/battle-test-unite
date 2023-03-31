@@ -10,13 +10,13 @@ public class PlayerHealth : MonoBehaviour
     private SpriteRenderer sr;
     private int timer;
     public int targeted { get; private set; }
-    public Party party { get; private set; }
+    public PlayerParty party { get; private set; }
 
     void Awake()
     {
         sr = GetComponentInChildren<SpriteRenderer>();
         canGetHit = true;
-        party = GameObject.Find("Party").GetComponent<Party>();
+        party = GameObject.Find("Party").GetComponent<PlayerParty>();
     }
 
     void Update()

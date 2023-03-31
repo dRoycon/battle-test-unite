@@ -8,7 +8,7 @@ public class HealthBar : MonoBehaviour
     [SerializeField] private Image healthBar;
     [SerializeField] private TextMeshProUGUI currentHp;
     [SerializeField] private TextMeshProUGUI maxHp;
-    Party party;
+    PlayerParty party;
 
     private void Start()
     {
@@ -16,7 +16,7 @@ public class HealthBar : MonoBehaviour
         party = GetComponentInParent<CharacterUi>().party;
         healthBar.fillAmount = party.activePartyMembers[spot].hp / party.activePartyMembers[spot].maxHp;
         maxHp.text = party.activePartyMembers[spot].maxHp + "";
-        healthBar.color = party.activePartyMembers[spot].color;
+        healthBar.color = ((PlayerPartyMember)party.activePartyMembers[spot]).color;
     }
 
     private void Update()

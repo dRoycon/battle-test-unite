@@ -58,7 +58,7 @@ public class PlayerTurnOptions : MonoBehaviour
     {
         spot = GetComponentInParent<CharacterUi>().spot;
         charUi = GetComponentInParent<CharacterUi>();
-        hasMagic = charUi.party.activePartyMembers[spot].hasMagic;
+        hasMagic = ((PlayerPartyMember)charUi.party.activePartyMembers[spot]).hasMagic;
         opt = 1;
         options = new Image[amt]
         {
@@ -87,12 +87,7 @@ public class PlayerTurnOptions : MonoBehaviour
             {
                 if (playerTurn == true && charUi.party.currentMemberTurn - 1 == spot)
                 {
-                    playerTurn = false;
-                    canMove = false;
-                    options[opt - 1].color = Consts.StaticOrange;
-                    opt = 1;
-                    playerTurnDeactivated = false;
-                    playerTurnActivated = false;
+                    PlayerTurnDeactivated();
                 }
             }
             if (playerTurnActivated)
@@ -104,6 +99,11 @@ public class PlayerTurnOptions : MonoBehaviour
                     canMove = true;
                     playerTurnActivated = false;
                     playerTurnDeactivated = false;
+                    if (charUi.party.activePartyMembers[spot].hp <= 0)
+                    {
+                        PlayerTurnDeactivated();
+                        EndTurn(1);
+                    }
                 }
             }
 
@@ -127,7 +127,7 @@ public class PlayerTurnOptions : MonoBehaviour
                             Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Fight");
                             break;
                         case -2: // act/magic
-                            if (charUi.party.activePartyMembers[spot].hasMagic) Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Magic");
+                            if (((PlayerPartyMember)charUi.party.activePartyMembers[spot]).hasMagic) Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Magic");
                             else Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Act");
                             break;
                         case -3: // item
@@ -152,19 +152,7 @@ public class PlayerTurnOptions : MonoBehaviour
                             tpBar.CheckTp();
                             break;
                     }
-                    options[(opt * -1) - 1].color = Consts.StaticOrange;
-                    texts[(opt * -1) - 1].enabled = false;
-                    opt = 1;
-                    if (charUi.party.CountActiveMembers() - 1 > spot)
-                    {
-                        charUi.party.currentMemberTurn = spot + 2;
-                    }
-                    else
-                    {
-                        charUi.party.PartyTurn(false);
-                        tpTurn1 = -1;
-                        tpTurn2 = -1;
-                    }
+                    EndTurn(opt * -1);
                 }
                 else if (spot > 0)
                 {
@@ -197,5 +185,32 @@ public class PlayerTurnOptions : MonoBehaviour
     {
         if (charUi.canMove) playerTurnActivated = true;
         else playerTurnDeactivated = true;
+    }
+
+    private void EndTurn(int _opt)
+    {
+        options[_opt - 1].color = Consts.StaticOrange;
+        texts[_opt - 1].enabled = false;
+        opt = 1;
+        if (charUi.party.CountActiveMembers() - 1 > spot)
+        {
+            charUi.party.currentMemberTurn = spot + 2;
+        }
+        else
+        {
+            charUi.party.PartyTurn(false);
+            tpTurn1 = -1;
+            tpTurn2 = -1;
+        }
+    }
+
+    private void PlayerTurnDeactivated()
+    {
+        playerTurn = false;
+        canMove = false;
+        options[opt - 1].color = Consts.StaticOrange;
+        opt = 1;
+        playerTurnDeactivated = false;
+        playerTurnActivated = false;
     }
 }

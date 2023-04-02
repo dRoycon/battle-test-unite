@@ -199,8 +199,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 596907127}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.04, y: -6.35, z: -10}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 5.9, y: -6.4, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -214,9 +214,33 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1603613657010603181, guid: c2dbc43e7e4ae19438e3a83941e8aaa4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1603613657010603181, guid: c2dbc43e7e4ae19438e3a83941e8aaa4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1603613657010603181, guid: c2dbc43e7e4ae19438e3a83941e8aaa4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2178130066715418534, guid: c2dbc43e7e4ae19438e3a83941e8aaa4, type: 3}
+      propertyPath: imageDistance
+      value: 0.4
+      objectReference: {fileID: 0}
     - target: {fileID: 8102706725979877480, guid: c2dbc43e7e4ae19438e3a83941e8aaa4, type: 3}
       propertyPath: m_RootOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8102706725979877480, guid: c2dbc43e7e4ae19438e3a83941e8aaa4, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 5.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8102706725979877480, guid: c2dbc43e7e4ae19438e3a83941e8aaa4, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 5.5
       objectReference: {fileID: 0}
     - target: {fileID: 8102706725979877480, guid: c2dbc43e7e4ae19438e3a83941e8aaa4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -264,7 +288,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8102706725979877482, guid: c2dbc43e7e4ae19438e3a83941e8aaa4, type: 3}
       propertyPath: m_TagString
-      value: AttackBoard
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 8102706726353228845, guid: c2dbc43e7e4ae19438e3a83941e8aaa4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.805
       objectReference: {fileID: 0}
     - target: {fileID: 8443594922250114627, guid: c2dbc43e7e4ae19438e3a83941e8aaa4, type: 3}
       propertyPath: m_IsTrigger

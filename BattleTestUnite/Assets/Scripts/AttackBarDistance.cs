@@ -5,44 +5,80 @@ using UnityEngine;
 public class AttackBarDistance : MonoBehaviour
 {
     bool inTrigger;
-    private Transform tr;
-    private float distance;
+    public float distance { get; private set; }
     [SerializeField] private GameObject target;
+    [SerializeField] private GameObject cursor;
+    private int timer;
+    private bool deactivating;
+    public bool attacked; 
+    [SerializeField] private float fadeAmtPerTick;
+    [SerializeField] private int tickAmt;
+    private SpriteRenderer cursorRender;
 
     void Start()
     {
+        attacked = false;
+        deactivating = false;
+        timer = 0;
         inTrigger = false;
         distance = -1;
-        tr = GetComponent<Transform>();
+        cursorRender = cursor.GetComponent<SpriteRenderer>();
     }
     private void Update()
     {
-        Debug.Log(distance);
+        //if (Input.GetKeyDown(KeyCode.D))
+        //{
+        //    Debug.Log(distance);
+        //}
     }
 
     private void FixedUpdate()
     {
-        if (inTrigger)
+        if (!attacked)
         {
-            distance = Vector2.Distance(tr.transform.localPosition, target.transform.localPosition);
+            if (inTrigger) distance = Vector2.Distance(cursor.transform.localPosition, target.transform.localPosition); // if in box
+            else if (deactivating) CursorFadeOut(tickAmt);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "AttackBoard")
+        if (!attacked)
         {
-            inTrigger = true;
+            if (collision.gameObject.tag == "Cursor")
+            {
+                inTrigger = true;
+                //Debug.Log("enter");
+            }
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.tag == "AttackBoard")
+        if (!attacked)
         {
-            Debug.Log("C");
-            inTrigger = false;
-            distance = -1;
+            if (collision.tag == "Cursor")
+            {
+                inTrigger = false;
+                distance = -1;
+                //Debug.Log("exit");
+                deactivating = true;
+            }
         }
+    }
+
+    private void CursorFadeOut(int pace)
+    {
+        if (timer % tickAmt == 0)
+        {
+            cursorRender.color -= new Color(0, 0, 0, fadeAmtPerTick);
+            if (cursorRender.color.a <= 0)
+            {
+                Destroy(cursor);
+                deactivating = false;
+            }
+            timer = 0;
+        }
+        timer++;
     }
 }

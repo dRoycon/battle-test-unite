@@ -490,6 +490,7 @@ MonoBehaviour:
   spareText: {fileID: 1021255396456453253}
   defend: {fileID: 2400075641734081552}
   defendText: {fileID: 2003011261283873663}
+  fightBar: {fileID: 8102706725979877482, guid: c2dbc43e7e4ae19438e3a83941e8aaa4, type: 3}
 --- !u!1 &2400075640419774122
 GameObject:
   m_ObjectHideFlags: 0

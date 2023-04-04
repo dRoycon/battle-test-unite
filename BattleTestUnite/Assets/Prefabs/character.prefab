@@ -490,7 +490,9 @@ MonoBehaviour:
   spareText: {fileID: 1021255396456453253}
   defend: {fileID: 2400075641734081552}
   defendText: {fileID: 2003011261283873663}
+  attackMaster: {fileID: 1106194900227774046, guid: 7ceb343baea8a264baf8976b9092bc4f, type: 3}
   fightBar: {fileID: 8102706725979877482, guid: c2dbc43e7e4ae19438e3a83941e8aaa4, type: 3}
+  cursorMinDistance: 0.35
 --- !u!1 &2400075640419774122
 GameObject:
   m_ObjectHideFlags: 0

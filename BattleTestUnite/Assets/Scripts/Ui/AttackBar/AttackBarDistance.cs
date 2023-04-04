@@ -10,7 +10,9 @@ public class AttackBarDistance : MonoBehaviour
     [SerializeField] private GameObject cursor;
     private int timer;
     private bool deactivating;
-    public bool attacked; 
+    public bool attacked;
+    public bool animationDone;
+    public bool cursorOut; // cursor is out, missed or attacked
     [SerializeField] private float fadeAmtPerTick;
     [SerializeField] private int tickAmt;
     private SpriteRenderer cursorRender;
@@ -23,13 +25,11 @@ public class AttackBarDistance : MonoBehaviour
         inTrigger = false;
         distance = -1;
         cursorRender = cursor.GetComponent<SpriteRenderer>();
+        cursorOut = false;
+        animationDone = false;
     }
     private void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.D))
-        //{
-        //    Debug.Log(distance);
-        //}
     }
 
     private void FixedUpdate()
@@ -48,7 +48,6 @@ public class AttackBarDistance : MonoBehaviour
             if (collision.gameObject.tag == "Cursor")
             {
                 inTrigger = true;
-                //Debug.Log("enter");
             }
         }
     }
@@ -59,26 +58,30 @@ public class AttackBarDistance : MonoBehaviour
         {
             if (collision.tag == "Cursor")
             {
+                cursor.tag = "Untagged";
                 inTrigger = false;
                 distance = -1;
-                //Debug.Log("exit");
                 deactivating = true;
+                cursorOut = true;
             }
         }
     }
 
     private void CursorFadeOut(int pace)
     {
-        if (timer % tickAmt == 0)
+        if (!animationDone)
         {
-            cursorRender.color -= new Color(0, 0, 0, fadeAmtPerTick);
-            if (cursorRender.color.a <= 0)
+            if (timer % tickAmt == 0)
             {
-                Destroy(cursor);
-                deactivating = false;
+                cursorRender.color -= new Color(0, 0, 0, fadeAmtPerTick);
+                if (cursorRender.color.a <= 0)
+                {
+                    deactivating = false;
+                    animationDone = true;
+                }
+                timer = 0;
             }
-            timer = 0;
+            timer++;
         }
-        timer++;
     }
 }

@@ -8,16 +8,24 @@ public class AttackBarMovement : MonoBehaviour
     private Transform tr;
     [SerializeField] private float space = 0.01f;
     [SerializeField] private float speed = 1;
+    [SerializeField] private int cursorRange;
     bool start; // Start Shmoovin'
+    public bool isTurn;
     bool canPress;
     int timer; // 3 2 1 Go!
     bool timer1Done;
+    bool animationDone;
     private SpriteRenderer sr;
     [SerializeField] private float fadeAmtPerTick;
     [SerializeField] private int tickAmt;
     [SerializeField] private float scaleAmtPerTick;
 
     int damage; // temp, should be in party member
+    private void OnEnable()
+    {
+        transform.localPosition += new Vector3(Random.Range(0, cursorRange) * space * speed, 0, 0);
+        isTurn = true;
+    }
     private void Start()
     {
         canPress = false;
@@ -25,6 +33,7 @@ public class AttackBarMovement : MonoBehaviour
         isFinished = false;
         tr = GetComponent<Transform>();
         timer1Done = false;
+        animationDone = false;
         sr = GetComponent<SpriteRenderer>();
     }
 
@@ -32,14 +41,17 @@ public class AttackBarMovement : MonoBehaviour
     {
         if (start)
         {
-            if (canPress)
+            if (canPress && isTurn)
             {
-                if (Input.GetKeyDown(KeyCode.Z))
+                if (Input.GetKeyDown(Consts.keys["confirm"]))
                 {
+                    AttackBarDistance ak = GetComponentInParent<AttackBarDistance>();
+                    ak.cursorOut = true;
                     speed = 0;
                     isFinished = true;
                     canPress = false;
-                    GetComponentInParent<AttackBarDistance>().attacked = true;
+                    ak.attacked = true;
+                    Debug.Log(CaculateDamage());
                 }
             }
         }
@@ -64,7 +76,6 @@ public class AttackBarMovement : MonoBehaviour
             tr.localPosition += new Vector3(-space, 0, 0) * speed;
             if (isFinished)
             {
-                Debug.Log(CaculateDamage());
                 CursorAttackAnimation();
             }
         }
@@ -85,17 +96,21 @@ public class AttackBarMovement : MonoBehaviour
 
     private void CursorAttackAnimation()
     {
-        if (timer % tickAmt == 0)
+        if (!animationDone)
         {
-            sr.color -= new Color(0, 0, 0, fadeAmtPerTick);
-            tr.localScale += new Vector3(scaleAmtPerTick, scaleAmtPerTick,0);
-            if (sr.color.a <= 0)
+            if (timer % tickAmt == 0)
             {
-                // put shit here
-                Destroy(gameObject);
+                sr.color -= new Color(0, 0, 0, fadeAmtPerTick);
+                tr.localScale += new Vector3(scaleAmtPerTick, scaleAmtPerTick, 0);
+                if (sr.color.a <= 0)
+                {
+                    animationDone = true;
+                    AttackBarDistance ak = GetComponentInParent<AttackBarDistance>();
+                    ak.animationDone = true;
+                }
+                timer = 0;
             }
-            timer = 0;
+            timer++;
         }
-        timer++;
     }
 }

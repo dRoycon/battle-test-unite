@@ -53,7 +53,9 @@ public class PlayerTurnOptions : MonoBehaviour
     private Image defendText;
     #endregion
 
+    [SerializeField] private GameObject attackMaster;
     [SerializeField] private GameObject fightBar;
+    [SerializeField] private float cursorMinDistance;
 
 
     private int opt;
@@ -224,24 +226,54 @@ public class PlayerTurnOptions : MonoBehaviour
         {
             charUi.party.currentMemberTurn = spot + 2;
         }
-        else // done! now the enemy's turn!
+        else // done! now the enemy's turn! but lets set stuff up first
         {
+            // fight
             int fightCnt = 0;
+            GameObject f1 = null, f2 = null, f3 = null, am = null;
+            if (fightTurn1 || fightTurn2 || fightTurn3)  am = Instantiate(attackMaster, new Vector2(0, 0), Quaternion.identity);
             if (fightTurn1)
             {
-                Instantiate(fightBar, new Vector2(0, 0), Quaternion.identity);
+                f1 = Instantiate(fightBar, new Vector2(0, 0), Quaternion.identity);
+                f1.transform.parent = am.transform;
+                f1.transform.GetChild(0).GetComponent<AttackBarMovement>().isTurn = false;
+
                 fightCnt++;
             }
             if(fightTurn2)
             {
-                Instantiate(fightBar, new Vector2(0, 0 - (fightCnt*3)), Quaternion.identity);
+                f2 = Instantiate(fightBar, new Vector2(0, 0 - (fightCnt*3)), Quaternion.identity);
+                f2.transform.parent = am.transform;
+                f2.transform.GetChild(0).GetComponent<AttackBarMovement>().isTurn = false;
+
                 fightCnt++;
+                if (fightTurn1) // make sure cursors arent too close
+                {
+                    if (Mathf.Abs(f1.transform.GetChild(0).transform.localPosition.x - f2.transform.GetChild(0).transform.localPosition.x) < cursorMinDistance) 
+                        f2.transform.GetChild(0).transform.localPosition = new Vector3(f1.transform.GetChild(0).transform.localPosition.x, f2.transform.GetChild(0).transform.localPosition.y);
+                }
             }
             if (fightTurn3)
             {
-                Instantiate(fightBar, new Vector2(0, 0 - (fightCnt * 3)), Quaternion.identity);
-            }
+                f3 = Instantiate(fightBar, new Vector2(0, 0 - (fightCnt * 3)), Quaternion.identity);
+                f3.transform.parent = am.transform;
+                f3.transform.GetChild(0).GetComponent<AttackBarMovement>().isTurn = false;
 
+                if (fightTurn1) // make sure cursors arent too close
+                {
+                    if (Mathf.Abs(f1.transform.GetChild(0).transform.localPosition.x - f3.transform.GetChild(0).transform.localPosition.x) < cursorMinDistance)
+                        f3.transform.GetChild(0).transform.localPosition = new Vector3(f1.transform.GetChild(0).transform.localPosition.x, f3.transform.GetChild(0).transform.localPosition.y);
+                }
+                if (fightTurn2) // make sure cursors arent too close
+                {
+                    if (Mathf.Abs(f2.transform.GetChild(0).transform.localPosition.x - f3.transform.GetChild(0).transform.localPosition.x) < cursorMinDistance)
+                        f3.transform.GetChild(0).transform.localPosition = new Vector3(f2.transform.GetChild(0).transform.localPosition.x, f3.transform.GetChild(0).transform.localPosition.y);
+                }
+                fightCnt++;
+            }
+            am.GetComponent<AttackMaster>().childAmt = fightCnt;
+
+            // defend
             charUi.party.PartyTurn(false);
             tpTurn1 = -1;
             tpTurn2 = -1;

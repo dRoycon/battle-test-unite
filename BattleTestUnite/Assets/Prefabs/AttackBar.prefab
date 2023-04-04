@@ -213,10 +213,9 @@ MonoBehaviour:
   target: {fileID: 8102706725837996535}
   cursor: {fileID: 8102706726353228846}
   attacked: 0
-  cursorDown: 0
+  cursorOut: 0
   fadeAmtPerTick: 0.2
   tickAmt: 1
-  imageDistance: 0.2
 --- !u!1 &8102706726353228846
 GameObject:
   m_ObjectHideFlags: 0
@@ -319,6 +318,7 @@ MonoBehaviour:
   isFinished: 0
   space: 0.01
   speed: 5
+  cursorRange: 22
   fadeAmtPerTick: 0.075
   tickAmt: 1
   scaleAmtPerTick: 0.15

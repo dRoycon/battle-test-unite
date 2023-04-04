@@ -14,10 +14,10 @@ public class PlayerParty : Party
         base.Awake();
         activePartyMembers = new PlayerPartyMember[PartyAmount];
         partyMembers = new PlayerPartyMember[4];
-        partyMembers[0] = new PlayerPartyMember(0, "Kris", 270, 2, 18, 0, false, Consts.KrisBlue);    // Kris
-        partyMembers[1] = new PlayerPartyMember(1, "Susie", 340, 2, 23, 8, true, Consts.SusieMagenta);   // Susie
-        partyMembers[2] = new PlayerPartyMember(2, "Ralsei", 250, 2, 16, 16, true, Consts.RalseiGreen); // Ralsei
-        partyMembers[3] = new PlayerPartyMember(3, "Noelle", 160, 1, 7, 14, true, Consts.NoelleYellow);   // Noelle
+        partyMembers[0] = new PlayerPartyMember(0, "Kris", 270, 2, 18, 0, false, Consts.KrisBlue, Consts.KrisAccent1, Consts.KrisAccent2);    // Kris
+        partyMembers[1] = new PlayerPartyMember(1, "Susie", 340, 2, 23, 8, true, Consts.SusieMagenta, Consts.SusieAccent1, Consts.SusieAccent2);   // Susie
+        partyMembers[2] = new PlayerPartyMember(2, "Ralsei", 250, 2, 16, 16, true, Consts.RalseiGreen, Consts.RalseiAccent1, Consts.RalseiAccent2); // Ralsei
+        partyMembers[3] = new PlayerPartyMember(3, "Noelle", 160, 1, 7, 14, true, Consts.NoelleYellow, Consts.NoelleAccent1, Consts.NoelleAccent2);   // Noelle
         AddMember(partyMembers[0]);
         AddMember(partyMembers[1]);
         AddMember(partyMembers[2]);

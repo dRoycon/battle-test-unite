@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class AttackBarMovement : MonoBehaviour
 {
-    public bool isFinished;
+    [HideInInspector] public bool isFinished;
     private Transform tr;
     [SerializeField] private float space = 0.01f;
     [SerializeField] private float speed = 1;
     [SerializeField] private int cursorRange;
     bool start; // Start Shmoovin'
-    public bool isTurn;
-    bool canPress;
+    [HideInInspector] public bool isTurn;
+    [HideInInspector] public bool canPress;
     int timer; // 3 2 1 Go!
     bool timer1Done;
     bool animationDone;
@@ -52,6 +52,7 @@ public class AttackBarMovement : MonoBehaviour
                     canPress = false;
                     ak.attacked = true;
                     Debug.Log(CaculateDamage());
+                    sr.color = transform.parent.GetChild(1).GetComponent<SpriteRenderer>().color;
                 }
             }
         }

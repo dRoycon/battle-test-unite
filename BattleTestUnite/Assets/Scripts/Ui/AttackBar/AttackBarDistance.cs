@@ -9,12 +9,15 @@ public class AttackBarDistance : MonoBehaviour
     [SerializeField] private GameObject target;
     [SerializeField] private GameObject cursor;
     private int timer;
-    private bool deactivating;
-    public bool attacked;
-    public bool animationDone;
-    public bool cursorOut; // cursor is out, missed or attacked
+    [HideInInspector] public bool deactivating;
+    [HideInInspector] public bool attacked;
+    [HideInInspector] public bool animationDone;
+    [HideInInspector] public bool cursorOut; // cursor is out, missed or attacked
     [SerializeField] private float fadeAmtPerTick;
+    [SerializeField] private GameObject afterEffect;
     [SerializeField] private int tickAmt;
+    [SerializeField] private float disTillEffect;
+    private float lastDashX;
     private SpriteRenderer cursorRender;
 
     void Start()
@@ -27,9 +30,17 @@ public class AttackBarDistance : MonoBehaviour
         cursorRender = cursor.GetComponent<SpriteRenderer>();
         cursorOut = false;
         animationDone = false;
+        lastDashX = cursor.transform.localPosition.x;
+
     }
     private void Update()
     {
+        if (!deactivating && Mathf.Abs(cursor.transform.localPosition.x - lastDashX) >= disTillEffect)
+        {
+            lastDashX = cursor.transform.localPosition.x;
+            GameObject af = Instantiate(afterEffect, new Vector2(cursor.transform.position.x, cursor.transform.position.y), Quaternion.identity);
+            af.transform.parent = transform;
+        }
     }
 
     private void FixedUpdate()
@@ -37,7 +48,7 @@ public class AttackBarDistance : MonoBehaviour
         if (!attacked)
         {
             if (inTrigger) distance = Vector2.Distance(cursor.transform.localPosition, target.transform.localPosition); // if in box
-            else if (deactivating) CursorFadeOut(tickAmt);
+            else if (deactivating && !animationDone) CursorFadeOut(tickAmt);
         }
     }
 
@@ -63,6 +74,7 @@ public class AttackBarDistance : MonoBehaviour
                 distance = -1;
                 deactivating = true;
                 cursorOut = true;
+                cursor.GetComponent<AttackBarMovement>().canPress = false;
             }
         }
     }
@@ -76,7 +88,6 @@ public class AttackBarDistance : MonoBehaviour
                 cursorRender.color -= new Color(0, 0, 0, fadeAmtPerTick);
                 if (cursorRender.color.a <= 0)
                 {
-                    deactivating = false;
                     animationDone = true;
                 }
                 timer = 0;

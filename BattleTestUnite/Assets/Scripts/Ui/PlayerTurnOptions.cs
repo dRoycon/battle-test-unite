@@ -237,6 +237,9 @@ public class PlayerTurnOptions : MonoBehaviour
                 f1 = Instantiate(fightBar, new Vector2(0, 0), Quaternion.identity);
                 f1.transform.parent = am.transform;
                 f1.transform.GetChild(0).GetComponent<AttackBarMovement>().isTurn = false;
+                f1.GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[0]).accentColor1;
+                f1.transform.GetChild(1).GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[0]).accentColor2;
+
 
                 fightCnt++;
             }
@@ -245,6 +248,8 @@ public class PlayerTurnOptions : MonoBehaviour
                 f2 = Instantiate(fightBar, new Vector2(0, 0 - (fightCnt*3)), Quaternion.identity);
                 f2.transform.parent = am.transform;
                 f2.transform.GetChild(0).GetComponent<AttackBarMovement>().isTurn = false;
+                f2.GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[1]).accentColor1;
+                f2.transform.GetChild(1).GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[1]).accentColor2;
 
                 fightCnt++;
                 if (fightTurn1) // make sure cursors arent too close
@@ -258,6 +263,8 @@ public class PlayerTurnOptions : MonoBehaviour
                 f3 = Instantiate(fightBar, new Vector2(0, 0 - (fightCnt * 3)), Quaternion.identity);
                 f3.transform.parent = am.transform;
                 f3.transform.GetChild(0).GetComponent<AttackBarMovement>().isTurn = false;
+                f3.GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[2]).accentColor1;
+                f3.transform.GetChild(1).GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[2]).accentColor2;
 
                 if (fightTurn1) // make sure cursors arent too close
                 {
@@ -271,7 +278,10 @@ public class PlayerTurnOptions : MonoBehaviour
                 }
                 fightCnt++;
             }
-            am.GetComponent<AttackMaster>().childAmt = fightCnt;
+            if (fightTurn1 || fightTurn2 || fightTurn3) am.GetComponent<AttackMaster>().childAmt = fightCnt;
+            fightTurn1 = false;
+            fightTurn2 = false;
+            fightTurn3 = false;
 
             // defend
             charUi.party.PartyTurn(false);

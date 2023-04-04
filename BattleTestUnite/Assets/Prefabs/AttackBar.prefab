@@ -212,10 +212,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 8102706725837996535}
   cursor: {fileID: 8102706726353228846}
+  deactivating: 0
   attacked: 0
+  animationDone: 0
   cursorOut: 0
   fadeAmtPerTick: 0.2
+  afterEffect: {fileID: 9215470108333614018, guid: 58202a2dd6b23e948a8223c90e570e2e, type: 3}
   tickAmt: 1
+  disTillEffect: 0.15
 --- !u!1 &8102706726353228846
 GameObject:
   m_ObjectHideFlags: 0
@@ -319,6 +323,8 @@ MonoBehaviour:
   space: 0.01
   speed: 5
   cursorRange: 22
+  isTurn: 0
+  canPress: 0
   fadeAmtPerTick: 0.075
   tickAmt: 1
   scaleAmtPerTick: 0.15

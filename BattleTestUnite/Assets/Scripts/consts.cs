@@ -45,6 +45,11 @@ public static class Consts
 
 
     #endregion
+
+    #region bools
+    public static bool finishedAttackingTurn = true;
+
+    #endregion
 }
 
 

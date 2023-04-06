@@ -13,7 +13,8 @@ public class PlayerTurnOptions : MonoBehaviour
     private static int tpTurn2 = -1;
     private static bool fightTurn1 = false;
     private static bool fightTurn2 = false;
-    private static bool fightTurn3 = false; 
+    private static bool fightTurn3 = false;
+    private static bool readyForNextTurn = false;
     public bool canMove;
     private bool playerTurnActivated;
     private bool playerTurn;
@@ -87,6 +88,7 @@ public class PlayerTurnOptions : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         tp = player.GetComponent<PlayerTp>();
         tpBar = GameObject.FindGameObjectWithTag("TpBar").GetComponent<TpBar>();
+        canMove = true;
     }
 
     void Update()
@@ -210,7 +212,17 @@ public class PlayerTurnOptions : MonoBehaviour
     private void FixedUpdate()
     {
         if (charUi.canMove) playerTurnActivated = true;
-        else playerTurnDeactivated = true;
+        else
+        {
+            playerTurnDeactivated = true;
+            if (readyForNextTurn && Consts.finishedAttackingTurn)
+            {
+                readyForNextTurn = false;
+                Consts.finishedAttackingTurn = true;
+                charUi.regularTurn = true;
+                charUi.party.PartyTurn(false);
+            }
+        }
     }
 
     /// <summary>
@@ -231,7 +243,11 @@ public class PlayerTurnOptions : MonoBehaviour
             // fight
             int fightCnt = 0;
             GameObject f1 = null, f2 = null, f3 = null, am = null;
-            if (fightTurn1 || fightTurn2 || fightTurn3)  am = Instantiate(attackMaster, new Vector2(0, 0), Quaternion.identity);
+            if (fightTurn1 || fightTurn2 || fightTurn3)
+            {
+                am = Instantiate(attackMaster, new Vector2(0, 0), Quaternion.identity);
+                Consts.finishedAttackingTurn = false;
+            }
             if (fightTurn1)
             {
                 f1 = Instantiate(fightBar, new Vector2(0, 0), Quaternion.identity);
@@ -284,7 +300,10 @@ public class PlayerTurnOptions : MonoBehaviour
             fightTurn3 = false;
 
             // defend
-            charUi.party.PartyTurn(false);
+            canMove = false;
+            charUi.regularTurn = false;
+            charUi.canMove = false;
+            readyForNextTurn = true;
             tpTurn1 = -1;
             tpTurn2 = -1;
         }
@@ -292,10 +311,10 @@ public class PlayerTurnOptions : MonoBehaviour
 
     private void PlayerTurnDeactivated()
     {
-        playerTurn = false;
         canMove = false;
         options[opt - 1].color = Consts.StaticOrange;
         opt = 1;
+        playerTurn = false;
         playerTurnDeactivated = false;
         playerTurnActivated = false;
     }

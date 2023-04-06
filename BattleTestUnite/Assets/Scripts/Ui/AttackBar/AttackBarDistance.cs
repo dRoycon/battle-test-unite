@@ -47,9 +47,9 @@ public class AttackBarDistance : MonoBehaviour
     {
         if (!attacked)
         {
-            if (inTrigger) distance = Vector2.Distance(cursor.transform.localPosition, target.transform.localPosition); // if in box
-            else if (deactivating && !animationDone) CursorFadeOut(tickAmt);
+            if (deactivating && !animationDone && !inTrigger) CursorFadeOut(tickAmt);
         }
+        else if (inTrigger) distance = CaculateDistance(); // if in box
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -77,6 +77,11 @@ public class AttackBarDistance : MonoBehaviour
                 cursor.GetComponent<AttackBarMovement>().canPress = false;
             }
         }
+    }
+
+    public float CaculateDistance()
+    {
+        return Vector2.Distance(cursor.transform.localPosition, target.transform.localPosition); // if in box
     }
 
     private void CursorFadeOut(int pace)

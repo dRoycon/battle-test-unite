@@ -15,6 +15,7 @@ public class AttackBarMovement : MonoBehaviour
     int timer; // 3 2 1 Go!
     bool timer1Done;
     bool animationDone;
+    bool perfectAttack;
     private SpriteRenderer sr;
     [SerializeField] private float fadeAmtPerTick;
     [SerializeField] private int tickAmt;
@@ -31,6 +32,7 @@ public class AttackBarMovement : MonoBehaviour
         canPress = false;
         timer = 0;
         isFinished = false;
+        perfectAttack = false;
         tr = GetComponent<Transform>();
         timer1Done = false;
         animationDone = false;
@@ -52,7 +54,8 @@ public class AttackBarMovement : MonoBehaviour
                     canPress = false;
                     ak.attacked = true;
                     Debug.Log(CaculateDamage());
-                    sr.color = transform.parent.GetChild(1).GetComponent<SpriteRenderer>().color;
+                    if (!perfectAttack) sr.color = transform.parent.GetChild(1).GetComponent<SpriteRenderer>().color;
+                    else sr.color = Consts.NoelleYellow;
                 }
             }
         }
@@ -60,6 +63,15 @@ public class AttackBarMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (start)
+        {
+            tr.localPosition += new Vector3(-space, 0, 0) * speed;
+            if (isFinished)
+            {
+                CursorAttackAnimation();
+            }
+        }
+
         if (!timer1Done)
         {
             timer++;
@@ -71,25 +83,22 @@ public class AttackBarMovement : MonoBehaviour
                 timer = 0;
             }
         }
-
-        if (start)
-        {
-            tr.localPosition += new Vector3(-space, 0, 0) * speed;
-            if (isFinished)
-            {
-                CursorAttackAnimation();
-            }
-        }
     }
 
     private int CaculateDamage()
     {
-        float d = GetComponentInParent<AttackBarDistance>().distance;
+        float d = GetComponentInParent<AttackBarDistance>().CaculateDistance();
         if (d == -1) damage = 0;
         else
         {
-            damage = (int)(70 * ((8 * d * d) / ((-20.4f * d) - 2) - (d * d) + 2.1f));
-            if (d < 0.01f && d >= 0) damage = (int)(damage*1.1f); 
+            int amp = 70;
+            if (d < 0.01f && d >= 0)
+            {
+                perfectAttack = true;
+                d = 0;
+                amp = (int)(amp * 1.1f);
+            }
+            damage = (int)(amp * ((8 * d * d) / ((-20.4f * d) - 2) - (d * d) + 2.1f));
         }
         if (damage == 0) Debug.Log("Miss!"); // debug
         return damage;

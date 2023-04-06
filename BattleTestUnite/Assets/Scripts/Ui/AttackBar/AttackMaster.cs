@@ -159,6 +159,7 @@ public class AttackMaster : MonoBehaviour
                 {
                     isLeaving = true;
                     timer = 0;
+
                 }
                 timer++;
             }
@@ -179,7 +180,11 @@ public class AttackMaster : MonoBehaviour
             {
                 child.color -= new Color(0,0,0, fadeAmt);
             }
-            if (children[0].color.a <= 0) Destroy(gameObject);
+            if (children[0].color.a <= 0)
+            {
+                Consts.finishedAttackingTurn = true;
+                Destroy(gameObject);
+            }
             timer = 0;
         }
         timer++;

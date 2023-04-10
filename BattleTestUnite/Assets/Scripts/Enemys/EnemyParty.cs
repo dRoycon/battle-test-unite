@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyGroup : Party
+public class EnemyParty : Party
 {
     //protected const int PartyAmount = 3;
     //public bool isTurn { get; private set; }
@@ -14,6 +14,20 @@ public class EnemyGroup : Party
     protected override void Awake()
     {
         base.Awake();
+        activePartyMembers = new Enemy[PartyAmount];
+    }
+    
+    /// <summary>
+    /// returns the spot of the first enemy it finds which isnt defeated
+    /// </summary>
+    /// <returns></returns>
+    public int NextInLine() 
+    {
+        for (int i = 0; i < CountActiveMembers(); i++)
+        {
+            if (activePartyMembers[i].hp > 0) return i;
+        }
+        return -1;
     }
 
     /// <summary>

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Party : MonoBehaviour
 {
-    protected const int PartyAmount = 3;
+    public const int PartyAmount = 3;
     public bool isTurn { get; private set; }
     public PartyMember[] activePartyMembers { get; protected set; } // party members in the party
 

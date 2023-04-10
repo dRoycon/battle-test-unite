@@ -6,13 +6,13 @@ public class characterMaster : MonoBehaviour
 {
     [SerializeField] private GameObject chara;
     [SerializeField] private float distance;
+    [SerializeField] public HudText hudText;
     private PlayerParty party;
     private int pMemberAmt;
 
     private void OnEnable()
     {
         party = FindObjectOfType<PlayerParty>();
-        Debug.Log(chara.GetComponent<RectTransform>().rect.width);
     }
 
     void Start()

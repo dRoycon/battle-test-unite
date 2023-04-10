@@ -10,10 +10,10 @@ public class Enemy : PartyMember
     // Act commands specific to enemy
     // Bullet Patterns and shit
 
-    public Enemy(int id, string nickname, int maxHp, float defensePower, float attackPower, int spareMeter, string check) 
+    public Enemy(int id, string nickname, int maxHp, float defensePower, float attackPower, string check) 
         : base(id, nickname, maxHp, defensePower, attackPower)
     {
-        this.spareMeter = spareMeter;
+        spareMeter = 0;
         this.check = check;
     }
 

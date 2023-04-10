@@ -65,6 +65,7 @@ public class PlayerMovement : MonoBehaviour
         dashCooldown = DASH_COOLDOWN;
         health = GetComponent<PlayerHealth>();
         tp = GetComponent<PlayerTp>();
+
     }
 
     private void Start() // Checks if its the player's turn at the start
@@ -341,6 +342,7 @@ public class PlayerMovement : MonoBehaviour
                 CanMove(true);
                 enemyTurnActivated = false;
                 enemyTurnDeactivated = false;
+                sr.sortingLayerName = "Player";
             }
         }
         if (enemyTurnDeactivated)
@@ -352,6 +354,7 @@ public class PlayerMovement : MonoBehaviour
                 transform.position = new Vector2(0, 19);
                 enemyTurnDeactivated = false;
                 enemyTurnActivated = false;
+                sr.sortingLayerName = "hud";
             }
         }
     }

@@ -6,7 +6,9 @@ public class AttackBarDistance : MonoBehaviour
 {
     bool inTrigger;
     public float distance { get; private set; }
-    [SerializeField] private GameObject target;
+    [HideInInspector] public int enemyTarget; // attacked enemy
+    [HideInInspector] public EnemyParty enemyParty;
+    [SerializeField] private GameObject target; // cursor targer
     [SerializeField] private GameObject cursor;
     private int timer;
     [HideInInspector] public bool deactivating;
@@ -31,8 +33,9 @@ public class AttackBarDistance : MonoBehaviour
         cursorOut = false;
         animationDone = false;
         lastDashX = cursor.transform.localPosition.x;
-
+        enemyParty = FindObjectOfType<EnemyParty>();
     }
+
     private void Update()
     {
         if (!deactivating && Mathf.Abs(cursor.transform.localPosition.x - lastDashX) >= disTillEffect)

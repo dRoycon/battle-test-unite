@@ -14,11 +14,16 @@ public class PlayerTurnOptions : MonoBehaviour
     private static bool fightTurn1 = false;
     private static bool fightTurn2 = false;
     private static bool fightTurn3 = false;
+    private static int target1 = -1;
+    private static int target2 = -1;
+    private static int target3 = -1;
     private static bool readyForNextTurn = false;
     public bool canMove;
     private bool playerTurnActivated;
     private bool playerTurn;
     private bool playerTurnDeactivated;
+    private bool subMenu;
+    private int subOpt;
     CharacterUi charUi;
     GameObject player;
     TpBar tpBar;
@@ -58,7 +63,7 @@ public class PlayerTurnOptions : MonoBehaviour
     [SerializeField] private GameObject fightBar;
     [SerializeField] private float cursorMinDistance;
 
-
+    HudText hudText;
     private int opt;
     private int prevOpt;
     private const int amt = 5;
@@ -89,6 +94,8 @@ public class PlayerTurnOptions : MonoBehaviour
         tp = player.GetComponent<PlayerTp>();
         tpBar = GameObject.FindGameObjectWithTag("TpBar").GetComponent<TpBar>();
         canMove = true;
+        hudText = transform.parent.transform.parent.GetComponent<characterMaster>().hudText;
+        subMenu = false;
     }
 
     void Update()
@@ -121,89 +128,126 @@ public class PlayerTurnOptions : MonoBehaviour
 
             if (canMove && charUi.party.currentMemberTurn - 1 == spot) // When It's that members turn
             {
-                prevOpt = opt;
-                opt = select.options(amt, opt);
-                if (opt >= 0) // shmoomin' in the menu
+                if (!subMenu)
                 {
-                    options[prevOpt - 1].color = Consts.StaticOrange;
-                    options[opt - 1].color = Consts.NoelleYellow;
-                    texts[prevOpt - 1].enabled = false;
-                    texts[opt - 1].enabled = true;
-                }
-                else if (opt > -amt - 1) // selecting an option
-                {
-                    timer = 0;
-                    switch (opt)
+                    prevOpt = opt;
+                    opt = select.options(amt, opt, false, "left", "right");
+                    if (opt >= 0) // shmoomin' in the menu
                     {
-                        default: // fight
-                            Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Fight");
-                            switch (spot)
+                        options[prevOpt - 1].color = Consts.StaticOrange;
+                        options[opt - 1].color = Consts.NoelleYellow;
+                        texts[prevOpt - 1].enabled = false;
+                        texts[opt - 1].enabled = true;
+                    }
+                    else if (opt > -amt - 1) // selecting an option
+                    {
+                        timer = 0;
+                        switch (opt)
+                        {
+                            default: // fight
+                                Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Fight");
+                                hudText.GetComponent<HudText>().changeType(2);
+                                subMenu = true;
+                                break;
+                            case -2: // act/magic
+                                if (((PlayerPartyMember)charUi.party.activePartyMembers[spot]).hasMagic) Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Magic");
+                                else Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Act");
+                                break;
+                            case -3: // item
+                                Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Item");
+                                break;
+                            case -4: // spare
+                                Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Spare");
+                                break;
+                            case -5: // defend
+                                Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Defend");
+                                switch (spot)
+                                {
+                                    default: // 0
+                                        tpTurn1 = tp.tp;
+                                        break;
+                                    case 1:
+                                        tpTurn2 = tp.tp;
+                                        break;
+                                }
+                                tp.SetTp(PlayerTp.Defend(tp.tp));
+                                tp.UpdtateTpPercent();
+                                tpBar.CheckTp();
+                                break;
+                        }
+                        if (!subMenu) EndTurn(opt * -1);
+                    }
+                    else if (spot > 0) // If You Go Back
+                    {
+                        switch (spot)
+                        {
+                            default: // spot 1
+                                fightTurn1 = false;
+
+                                if (tpTurn1 != -1) tp.SetTp(tpTurn1);
+                                tpTurn1 = -1;
+                                break;
+                            case 2:
+                                fightTurn2 = false;
+
+                                if (tpTurn2 != -1) tp.SetTp(tpTurn2);
+                                tpTurn2 = -1;
+                                break;
+                        }
+                        timer = 0;
+                        options[prevOpt - 1].color = Consts.StaticOrange;
+                        texts[prevOpt - 1].enabled = false;
+                        opt = 1;
+                        charUi.party.currentMemberTurn = spot;
+                        tp.UpdtateTpPercent();
+                        tpBar.CheckTp();
+                    }
+                    else opt = prevOpt;
+                }
+                else
+                {
+                    if (hudText.isDone)
+                    {
+                        hudText.changeType(0);
+                        hudText.isDone = false;
+                        subOpt = hudText.subSelect;
+                        subMenu = false;
+                        if (subOpt != -100)
+                        {
+                            switch (opt)
                             {
-                                default: // 0
-                                    fightTurn1 = true;
+                                default: // fight
+                                    switch (spot)
+                                    {
+                                        default: // 0
+                                            fightTurn1 = true;
+                                            target1 = -subOpt-1;
+                                            break;
+                                        case 1:
+                                            fightTurn2 = true;
+                                            target2 = -subOpt-1;
+                                            break;
+                                        case 2:
+                                            fightTurn3 = true;
+                                            target3 = -subOpt-1;
+                                            break;
+                                    }
                                     break;
-                                case 1:
-                                    fightTurn2 = true;
+                                case -2: // act / magic
                                     break;
-                                case 2:
-                                    fightTurn3 = true;
+                                case -3: // item
+                                    break;
+                                case -4: // mercy
                                     break;
                             }
-                            break;
-                        case -2: // act/magic
-                            if (((PlayerPartyMember)charUi.party.activePartyMembers[spot]).hasMagic) Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Magic");
-                            else Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Act");
-                            break;
-                        case -3: // item
-                            Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Item");
-                            break;
-                        case -4: // spare
-                            Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Spare");
-                            break;
-                        case -5: // defend
-                            Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Defend");
-                            switch (spot)
-                            {
-                                default: // 0
-                                    tpTurn1 = tp.tp;
-                                    break;
-                                case 1:
-                                    tpTurn2 = tp.tp;
-                                    break;
-                            }
-                            tp.SetTp(PlayerTp.Defend(tp.tp));
-                            tp.UpdtateTpPercent();
-                            tpBar.CheckTp();
-                            break;
+                            EndTurn(opt * -1);
+                        }
+                        else
+                        {
+                            opt = -opt;
+                        }
                     }
-                    EndTurn(opt * -1);
                 }
-                else if (spot > 0) // If You Go Back
-                {
-                    switch (spot)
-                    {
-                        default: // spot 1
-                            fightTurn1 = false;
-
-                            if (tpTurn1 != -1) tp.SetTp(tpTurn1);
-                            tpTurn1 = -1;
-                            break;
-                        case 2:
-                            fightTurn2 = false;
-
-                            if (tpTurn2 != -1) tp.SetTp(tpTurn2);
-                            tpTurn2 = -1;
-                            break;
-                    }
-                    timer = 0;
-                    options[prevOpt - 1].color = Consts.StaticOrange;
-                    texts[prevOpt - 1].enabled = false;
-                    opt = 1;
-                    charUi.party.currentMemberTurn = spot;
-                    tp.UpdtateTpPercent();
-                    tpBar.CheckTp();
-                }
-                else opt = prevOpt;
             }
         }
         else timer++; 
@@ -255,7 +299,7 @@ public class PlayerTurnOptions : MonoBehaviour
                 f1.transform.GetChild(0).GetComponent<AttackBarMovement>().isTurn = false;
                 f1.GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[0]).accentColor1;
                 f1.transform.GetChild(1).GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[0]).accentColor2;
-
+                f1.GetComponent<AttackBarDistance>().enemyTarget = target1;
 
                 fightCnt++;
             }
@@ -266,6 +310,7 @@ public class PlayerTurnOptions : MonoBehaviour
                 f2.transform.GetChild(0).GetComponent<AttackBarMovement>().isTurn = false;
                 f2.GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[1]).accentColor1;
                 f2.transform.GetChild(1).GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[1]).accentColor2;
+                f2.GetComponent<AttackBarDistance>().enemyTarget = target2;
 
                 fightCnt++;
                 if (fightTurn1) // make sure cursors arent too close
@@ -281,6 +326,7 @@ public class PlayerTurnOptions : MonoBehaviour
                 f3.transform.GetChild(0).GetComponent<AttackBarMovement>().isTurn = false;
                 f3.GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[2]).accentColor1;
                 f3.transform.GetChild(1).GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[2]).accentColor2;
+                f3.GetComponent<AttackBarDistance>().enemyTarget = target3;
 
                 if (fightTurn1) // make sure cursors arent too close
                 {
@@ -298,6 +344,9 @@ public class PlayerTurnOptions : MonoBehaviour
             fightTurn1 = false;
             fightTurn2 = false;
             fightTurn3 = false;
+            target1 = -1;
+            target2 = -1;
+            target3 = -1;
 
             // defend
             canMove = false;

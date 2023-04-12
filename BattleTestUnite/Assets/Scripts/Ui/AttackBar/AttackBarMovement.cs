@@ -106,14 +106,20 @@ public class AttackBarMovement : MonoBehaviour
             EnemyParty enemyP = GetComponentInParent<AttackBarDistance>().enemyParty;
             int target = GetComponentInParent<AttackBarDistance>().enemyTarget;
             Debug.Log("Target:" + target);
-            if (enemyP.activePartyMembers[target].hp > 0) enemyP.activePartyMembers[target].hp -= damage;
+            if (enemyP.activePartyMembers[target] != null && enemyP.activePartyMembers[target].hp > 0)
+            {
+                enemyP.activePartyMembers[target].hp -= damage;
+                DidDefeat(enemyP, target);
+            }
             else
             {
-                target = enemyP.NextInLine();
-                if (target != -1) enemyP.activePartyMembers[target].hp -= damage;
+                target = enemyP.NextInLineAttack();
+                if (target != -1)
+                {
+                    enemyP.activePartyMembers[target].hp -= damage;
+                    DidDefeat(enemyP, target);
+                }
             }
-            if (target != -1)
-                Debug.Log(enemyP.activePartyMembers[target].nickname + ": " + enemyP.activePartyMembers[target].hp + "/" + enemyP.activePartyMembers[target].maxHp);
         }
     }
 
@@ -134,6 +140,15 @@ public class AttackBarMovement : MonoBehaviour
                 timer = 0;
             }
             timer++;
+        }
+    }
+
+    private void DidDefeat(EnemyParty enemyP, int target)
+    {
+        Debug.Log(enemyP.activePartyMembers[target].nickname + ": " + enemyP.activePartyMembers[target].hp + "/" + enemyP.activePartyMembers[target].maxHp);
+        if (enemyP.activePartyMembers[target] != null && enemyP.activePartyMembers[target].hp <= 0)
+        {
+            enemyP.RemoveMember(enemyP.activePartyMembers[target].id);
         }
     }
 }

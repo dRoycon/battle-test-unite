@@ -21,11 +21,24 @@ public class EnemyParty : Party
     /// returns the spot of the first enemy it finds which isnt defeated
     /// </summary>
     /// <returns></returns>
-    public int NextInLine() 
+    public int NextInLineAttack() 
     {
         for (int i = 0; i < CountActiveMembers(); i++)
         {
             if (activePartyMembers[i].hp > 0) return i;
+        }
+        return -1;
+    }
+
+    /// <summary>
+    /// returns the spot of the first enemy it finds which can be spared
+    /// </summary>
+    /// <returns></returns>
+    public int NextInLineSpare()
+    {
+        for (int i = 0; i < CountActiveMembers(); i++)
+        {
+            if (activePartyMembers[i].hp > 0 && ((Enemy)activePartyMembers[i]).spareMeter >= Enemy.spareMeterMax) return i;
         }
         return -1;
     }

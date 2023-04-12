@@ -47,14 +47,12 @@ public class playerSubOptions : MonoBehaviour
 
     private void RenderPos()
     {
-        Debug.Log(pos +" " +childAmt);
         player.transform.position = new Vector2(-18.527f, children[pos-1].transform.position.y-11.1502f);
     }
 
     public void UpdateChildren()
     {
         children = new GameObject[Party.PartyAmount];
-        Debug.Log(transform.childCount);
         childAmt = 0;
         if (transform.childCount > 0)
         {

@@ -9,9 +9,10 @@ public class Battle : MonoBehaviour
 
     private void OnEnable()
     {
-        Enemy dummy = new Enemy(1, "dummy", 700, 5, 5, "silly fella");
+        Enemy dummy = new Enemy(1, "dummy", 90, 5, 5, "silly fella");
+        dummy.spareMeter = 100;
         enemyP.AddMember(dummy);
-        Enemy dummy2 = new Enemy(2, "dummy2", 1000, 2, 7, "the other one");
+        Enemy dummy2 = new Enemy(2, "dummy2", 90, 2, 7, "the other one");
         enemyP.AddMember(dummy2);
     }
 

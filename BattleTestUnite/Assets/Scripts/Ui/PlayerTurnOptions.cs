@@ -11,9 +11,9 @@ public class PlayerTurnOptions : MonoBehaviour
     private static int timer = 0;
     private static int tpTurn1 = -1;
     private static int tpTurn2 = -1;
-    private static bool fightTurn1 = false;
-    private static bool fightTurn2 = false;
-    private static bool fightTurn3 = false;
+    private static int optTurn1 = -1;
+    private static int optTurn2 = -1;
+    private static int optTurn3 = -1;
     private static int target1 = -1;
     private static int target2 = -1;
     private static int target3 = -1;
@@ -26,6 +26,7 @@ public class PlayerTurnOptions : MonoBehaviour
     private int subOpt;
     CharacterUi charUi;
     GameObject player;
+    EnemyParty enemyP;
     TpBar tpBar;
     PlayerTp tp;
 
@@ -96,6 +97,7 @@ public class PlayerTurnOptions : MonoBehaviour
         canMove = true;
         hudText = transform.parent.transform.parent.GetComponent<characterMaster>().hudText;
         subMenu = false;
+        enemyP = FindObjectOfType<EnemyParty>();
     }
 
     void Update()
@@ -158,6 +160,8 @@ public class PlayerTurnOptions : MonoBehaviour
                                 break;
                             case -4: // spare
                                 Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Spare");
+                                hudText.GetComponent<HudText>().changeType(2);
+                                subMenu = true;
                                 break;
                             case -5: // defend
                                 Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Defend");
@@ -182,13 +186,13 @@ public class PlayerTurnOptions : MonoBehaviour
                         switch (spot)
                         {
                             default: // spot 1
-                                fightTurn1 = false;
+                                optTurn1 = -1;
 
                                 if (tpTurn1 != -1) tp.SetTp(tpTurn1);
-                                tpTurn1 = -1;
+                                optTurn1 = -1;
                                 break;
                             case 2:
-                                fightTurn2 = false;
+                                optTurn2 = -1;
 
                                 if (tpTurn2 != -1) tp.SetTp(tpTurn2);
                                 tpTurn2 = -1;
@@ -220,15 +224,15 @@ public class PlayerTurnOptions : MonoBehaviour
                                     switch (spot)
                                     {
                                         default: // 0
-                                            fightTurn1 = true;
+                                            optTurn1 = 0;
                                             target1 = -subOpt-1;
                                             break;
                                         case 1:
-                                            fightTurn2 = true;
+                                            optTurn2 = 0;
                                             target2 = -subOpt-1;
                                             break;
                                         case 2:
-                                            fightTurn3 = true;
+                                            optTurn3 = 0;
                                             target3 = -subOpt-1;
                                             break;
                                     }
@@ -238,6 +242,21 @@ public class PlayerTurnOptions : MonoBehaviour
                                 case -3: // item
                                     break;
                                 case -4: // mercy
+                                    switch (spot)
+                                    {
+                                        default: // 0
+                                            optTurn1 = 3;
+                                            target1 = -subOpt - 1;
+                                            break;
+                                        case 1:
+                                            optTurn2 = 3;
+                                            target2 = -subOpt - 1;
+                                            break;
+                                        case 2:
+                                            optTurn3 = 3;
+                                            target3 = -subOpt - 1;
+                                            break;
+                                    }
                                     break;
                             }
                             EndTurn(opt * -1);
@@ -284,66 +303,135 @@ public class PlayerTurnOptions : MonoBehaviour
         }
         else // done! now the enemy's turn! but lets set stuff up first
         {
-            // fight
             int fightCnt = 0;
-            GameObject f1 = null, f2 = null, f3 = null, am = null;
-            if (fightTurn1 || fightTurn2 || fightTurn3)
+            GameObject f1 = null, f2 = null, f3 = null, am = null; // only used if u fight
+            if (optTurn1==0 || optTurn2==0 || optTurn3==0) // if fighting
             {
                 am = Instantiate(attackMaster, new Vector2(0, 0), Quaternion.identity);
                 Consts.finishedAttackingTurn = false;
             }
-            if (fightTurn1)
-            {
-                f1 = Instantiate(fightBar, new Vector2(0, 0), Quaternion.identity);
-                f1.transform.parent = am.transform;
-                f1.transform.GetChild(0).GetComponent<AttackBarMovement>().isTurn = false;
-                f1.GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[0]).accentColor1;
-                f1.transform.GetChild(1).GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[0]).accentColor2;
-                f1.GetComponent<AttackBarDistance>().enemyTarget = target1;
 
-                fightCnt++;
-            }
-            if(fightTurn2)
+            switch (optTurn1) // first party member
             {
-                f2 = Instantiate(fightBar, new Vector2(0, 0 - (fightCnt*3)), Quaternion.identity);
-                f2.transform.parent = am.transform;
-                f2.transform.GetChild(0).GetComponent<AttackBarMovement>().isTurn = false;
-                f2.GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[1]).accentColor1;
-                f2.transform.GetChild(1).GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[1]).accentColor2;
-                f2.GetComponent<AttackBarDistance>().enemyTarget = target2;
+                case 0: // fight
+                    f1 = Instantiate(fightBar, new Vector2(0, 0), Quaternion.identity);
+                    f1.transform.parent = am.transform;
+                    f1.transform.GetChild(0).GetComponent<AttackBarMovement>().isTurn = false;
+                    f1.GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[0]).accentColor1;
+                    f1.transform.GetChild(1).GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[0]).accentColor2;
+                    f1.GetComponent<AttackBarDistance>().enemyTarget = target1;
 
-                fightCnt++;
-                if (fightTurn1) // make sure cursors arent too close
-                {
-                    if (Mathf.Abs(f1.transform.GetChild(0).transform.localPosition.x - f2.transform.GetChild(0).transform.localPosition.x) < cursorMinDistance) 
-                        f2.transform.GetChild(0).transform.localPosition = new Vector3(f1.transform.GetChild(0).transform.localPosition.x, f2.transform.GetChild(0).transform.localPosition.y);
-                }
+                    fightCnt++;
+                    break;
+                case 3: // spare
+                    if (enemyP.activePartyMembers[target1]!=null && enemyP.activePartyMembers[target1].hp>0)
+                    {
+                        if (((Enemy)enemyP.activePartyMembers[target1]).spareMeter>=Enemy.spareMeterMax)
+                        {
+                            Debug.Log(enemyP.activePartyMembers[target1].nickname + " was spared");
+                            enemyP.RemoveMember(enemyP.activePartyMembers[target1].id);
+                        }
+                        else Debug.Log(enemyP.activePartyMembers[target1].nickname + " can't be spared");
+                    }
+                    else
+                    {
+                        target1 = enemyP.NextInLineSpare();
+                        if (target1 != -1)
+                        {
+                            Debug.Log(enemyP.activePartyMembers[target1].nickname + " was spared");
+                            enemyP.RemoveMember(enemyP.activePartyMembers[target1].id);
+                        }
+                    }
+                    break;
             }
-            if (fightTurn3)
+
+            switch (optTurn2) // second party member
             {
-                f3 = Instantiate(fightBar, new Vector2(0, 0 - (fightCnt * 3)), Quaternion.identity);
-                f3.transform.parent = am.transform;
-                f3.transform.GetChild(0).GetComponent<AttackBarMovement>().isTurn = false;
-                f3.GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[2]).accentColor1;
-                f3.transform.GetChild(1).GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[2]).accentColor2;
-                f3.GetComponent<AttackBarDistance>().enemyTarget = target3;
+                case 0: // fight
+                    f2 = Instantiate(fightBar, new Vector2(0, 0 - (fightCnt * 3)), Quaternion.identity);
+                    f2.transform.parent = am.transform;
+                    f2.transform.GetChild(0).GetComponent<AttackBarMovement>().isTurn = false;
+                    f2.GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[1]).accentColor1;
+                    f2.transform.GetChild(1).GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[1]).accentColor2;
+                    f2.GetComponent<AttackBarDistance>().enemyTarget = target2;
 
-                if (fightTurn1) // make sure cursors arent too close
-                {
-                    if (Mathf.Abs(f1.transform.GetChild(0).transform.localPosition.x - f3.transform.GetChild(0).transform.localPosition.x) < cursorMinDistance)
-                        f3.transform.GetChild(0).transform.localPosition = new Vector3(f1.transform.GetChild(0).transform.localPosition.x, f3.transform.GetChild(0).transform.localPosition.y);
-                }
-                if (fightTurn2) // make sure cursors arent too close
-                {
-                    if (Mathf.Abs(f2.transform.GetChild(0).transform.localPosition.x - f3.transform.GetChild(0).transform.localPosition.x) < cursorMinDistance)
-                        f3.transform.GetChild(0).transform.localPosition = new Vector3(f2.transform.GetChild(0).transform.localPosition.x, f3.transform.GetChild(0).transform.localPosition.y);
-                }
-                fightCnt++;
+                    fightCnt++;
+                    if (optTurn1 == 0) // make sure cursors arent too close
+                    {
+                        if (Mathf.Abs(f1.transform.GetChild(0).transform.localPosition.x - f2.transform.GetChild(0).transform.localPosition.x) < cursorMinDistance)
+                            f2.transform.GetChild(0).transform.localPosition = new Vector3(f1.transform.GetChild(0).transform.localPosition.x, f2.transform.GetChild(0).transform.localPosition.y);
+                    }
+                    break;
+                case 3: // spare
+                    if (enemyP.activePartyMembers[target2] != null && enemyP.activePartyMembers[target2].hp > 0)
+                    {
+                        if (((Enemy)enemyP.activePartyMembers[target2]).spareMeter >= Enemy.spareMeterMax)
+                        {
+                            Debug.Log(enemyP.activePartyMembers[target2].nickname + " was spared");
+                            enemyP.RemoveMember(enemyP.activePartyMembers[target2].id);
+                        }
+                        else Debug.Log(enemyP.activePartyMembers[target2].nickname + " can't be spared");
+                    }
+                    else
+                    {
+                        target2 = enemyP.NextInLineSpare();
+                        if (target2 != -1)
+                        {
+                            Debug.Log(enemyP.activePartyMembers[target2].nickname + " was spared");
+                            enemyP.RemoveMember(enemyP.activePartyMembers[target2].id);
+                        }
+                    }
+                    break;
             }
-            if (fightTurn1 || fightTurn2 || fightTurn3) am.GetComponent<AttackMaster>().childAmt = fightCnt;
-            fightTurn1 = false;
-            fightTurn2 = false;
-            fightTurn3 = false;
+
+            switch (optTurn3)
+            {
+                case 0: // fight
+                    f3 = Instantiate(fightBar, new Vector2(0, 0 - (fightCnt * 3)), Quaternion.identity);
+                    f3.transform.parent = am.transform;
+                    f3.transform.GetChild(0).GetComponent<AttackBarMovement>().isTurn = false;
+                    f3.GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[2]).accentColor1;
+                    f3.transform.GetChild(1).GetComponent<SpriteRenderer>().color = ((PlayerPartyMember)charUi.party.activePartyMembers[2]).accentColor2;
+                    f3.GetComponent<AttackBarDistance>().enemyTarget = target3;
+
+                    if (optTurn1 == 0) // make sure cursors arent too close
+                    {
+                        if (Mathf.Abs(f1.transform.GetChild(0).transform.localPosition.x - f3.transform.GetChild(0).transform.localPosition.x) < cursorMinDistance)
+                            f3.transform.GetChild(0).transform.localPosition = new Vector3(f1.transform.GetChild(0).transform.localPosition.x, f3.transform.GetChild(0).transform.localPosition.y);
+                    }
+                    if (optTurn2 == 0) // make sure cursors arent too close
+                    {
+                        if (Mathf.Abs(f2.transform.GetChild(0).transform.localPosition.x - f3.transform.GetChild(0).transform.localPosition.x) < cursorMinDistance)
+                            f3.transform.GetChild(0).transform.localPosition = new Vector3(f2.transform.GetChild(0).transform.localPosition.x, f3.transform.GetChild(0).transform.localPosition.y);
+                    }
+                    fightCnt++;
+                    break;
+                case 3: // spare
+                    if (enemyP.activePartyMembers[target3] != null && enemyP.activePartyMembers[target3].hp > 0)
+                    {
+                        if (((Enemy)enemyP.activePartyMembers[target3]).spareMeter >= Enemy.spareMeterMax)
+                        {
+                            Debug.Log(enemyP.activePartyMembers[target3].nickname + " was spared");
+                            enemyP.RemoveMember(enemyP.activePartyMembers[target3].id);
+                        }
+                        else Debug.Log(enemyP.activePartyMembers[target3].nickname + " can't be spared");
+                    }
+                    else
+                    {
+                        target3 = enemyP.NextInLineSpare();
+                        if (target3 != -1)
+                        {
+                            Debug.Log(enemyP.activePartyMembers[target3].nickname + " was spared");
+                            enemyP.RemoveMember(enemyP.activePartyMembers[target3].id);
+                        }
+                    }
+                    break;
+            }
+
+            if (optTurn1==0 || optTurn2==0 || optTurn3==0) am.GetComponent<AttackMaster>().childAmt = fightCnt;
+            optTurn1 = -1;
+            optTurn2 = -1;
+            optTurn3 = -1;
             target1 = -1;
             target2 = -1;
             target3 = -1;

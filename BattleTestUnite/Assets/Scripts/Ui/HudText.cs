@@ -40,7 +40,7 @@ public class HudText : MonoBehaviour
                 stats(true);
                 break;
             case 3:
-                // item / spell description
+                useAct();
                 break;
             case 4:
                 // diolouge
@@ -64,12 +64,13 @@ public class HudText : MonoBehaviour
         }
     }
 
-    private void stats(bool statsEnemy) // type 1 & 2
+    private void stats(bool statsEnemy) // type 1 & 2 - health..spare
     {
         this.statsEnemy = statsEnemy;
         GameObject SubOpt = new GameObject();
         SubOpt.AddComponent<playerSubOptions>();
         SubOpt.transform.SetParent(transform, false);
+        SubOpt.GetComponent<playerSubOptions>().type = 1;
         SubOpt.name = "SubOptions";
         SubOpt.GetComponent<playerSubOptions>().isEnemy = statsEnemy;
         Party party;
@@ -102,6 +103,33 @@ public class HudText : MonoBehaviour
             mercyTitle.transform.SetParent(SubOpt.transform, false);
             mercyTitle.transform.localPosition = new Vector2(514.3f, -262.2f);
             mercyTitle.GetComponent<TextMeshProUGUI>().text = "MERCY";
+        }
+
+        SubOpt.GetComponent<playerSubOptions>().UpdateChildren();
+    }
+
+    private void useAct() // type 3 - item/spell/act
+    {
+        GameObject SubOpt = new GameObject();
+        SubOpt.AddComponent<playerSubOptions>();
+        SubOpt.transform.SetParent(transform, false);
+        SubOpt.GetComponent<playerSubOptions>().type = 3;
+        SubOpt.name = "SubOptions";
+
+        GameObject[] actions = new GameObject[PlayerParty.inventory.Count()];
+        for (int i = 0; i < PlayerParty.inventory.Count(); i++)
+        {
+            actions[i] = Instantiate(text, new Vector2(0, 0), Quaternion.identity);
+            actions[i].transform.SetParent(SubOpt.transform, false);
+            actions[i].GetComponent<ActTitle>().isOn = true;
+            actions[i].name = i+"";
+            float x, y;
+            if (i%2==0) x = actions[i].transform.localPosition.x - 464.3f;
+            else x = actions[i].transform.localPosition.x;
+            if (i>=Inventory.PocketSpace/2) y = actions[i].transform.localPosition.y - (((i- (Inventory.PocketSpace/2)) / 2) * 58) -300.9901f;
+            else y = actions[i].transform.localPosition.y - (((i / 2) * 58)) - 300.9901f;
+            actions[i].transform.localPosition = new Vector2(x, y);
+            actions[i].GetComponent<ActTitle>().spot = i;
         }
 
         SubOpt.GetComponent<playerSubOptions>().UpdateChildren();

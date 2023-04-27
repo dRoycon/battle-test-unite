@@ -1,4 +1,4 @@
-using System.Collections;
+ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,5 +24,6 @@ public class PlayerPartyMember : PartyMember
         this.hasMagic = hasMagic;
         this.accentColor1 = accentColor1;
         this.accentColor2 = accentColor2;
+        PlayerParty.OverallMemberAmount++;
     }
 }

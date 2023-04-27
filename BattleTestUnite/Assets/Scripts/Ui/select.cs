@@ -29,13 +29,13 @@ public class select
         else if (is2D && Input.GetKeyDown(Consts.keys["up"]))
         {
             if (pos - 1 > min) res = pos - 2;
-            else if (res % 2 == 0) res = amt;
+            else if (pos % 2 == 0) res = amt;
             else res = amt - 1;
         }
         else if (is2D && Input.GetKeyDown(Consts.keys["down"]))
         {
             if (pos + 1 < amt) res = pos + 2;
-            else if (res % 2 == 0) res = 2;
+            else if (pos % 2 == 0 && amt>=2) res = 2;
             else res = 1;
         }
         if (res == 0) return pos;

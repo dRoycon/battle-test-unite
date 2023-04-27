@@ -157,6 +157,8 @@ public class PlayerTurnOptions : MonoBehaviour
                                 break;
                             case -3: // item
                                 Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Item");
+                                hudText.GetComponent<HudText>().changeType(3);
+                                subMenu = true;
                                 break;
                             case -4: // spare
                                 Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Spare");

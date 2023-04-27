@@ -2,43 +2,53 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item : MonoBehaviour
+public class Item : MemberAction
 {
-    public int id { get; private set; }
-    public string itemName { get; private set; }
-    public string nickname { get; private set; }
-    public float hp { get; private set; }
-    public int tp { get; private set; }
-    public int ability { get; private set; }
-    public string description { get; private set; }
-    public string shortDescription { get; private set; }
+    //public int id { get; protected set; }
+    //public string itemName { get; protected set; }
+    //public string nickname { get; protected set; }
+    //public string description { get; protected set; }
+    public int[] hp { get; private set; }
+    public bool healAll { get; private set; }
 
     #region builders
-    public Item(int _id, float _hp, string _itemName, string _nickname)
+
+    /// <summary>
+    /// Make a regular Item
+    /// </summary>
+    /// <param name="_id"></param>
+    /// <param name="_hp"></param>
+    /// <param name="_itemName"></param>
+    /// <param name="_nickname"></param>
+    /// <param name="healAll"></param>
+    public Item(int _id, int _hp, string _fullName, string _nickname, string description, bool healAll) : base(_id, _fullName, _nickname)
     {
-        id = _id;
-        itemName = _itemName;
-        nickname = _nickname;
-        hp = _hp;
-        ability = 0;
-        tp = 0;
+        this.healAll = healAll;
+        this.description = description;
+        hp = new int[PlayerParty.OverallMemberAmount];
+        for (int i = 0; i < hp.Length; i++)
+        {
+            hp[i] = _hp;
+        }
     }
 
-    public Item(int id, string itemName, string nickname, float hp, int tp, int ability)
+    /// <summary>
+    /// Make an Item that heals a specific hp amount based on the party member
+    /// </summary>
+    /// <param name="_id"></param>
+    /// <param name="_hpArr"></param>
+    /// <param name="_itemName"></param>
+    /// <param name="_nickname"></param>
+    /// <param name="healAll"></param>
+    public Item(int _id, int[] _hpArr, string _fullName, string _nickname, string description,bool healAll) : base(_id, _fullName, _nickname)
     {
-        this.id = id;
-        this.itemName = itemName;
-        this.nickname = nickname;
-        this.hp = hp;
-        this.tp = tp;
-        this.ability = ability;
+        this.healAll = healAll;
+        this.description = description;
+        for (int i = 0; i < hp.Length; i++)
+        {
+            hp[i] = _hpArr[i];
+        }
     }
     #endregion
 
-    public void Use(int partyMemberPosition) // party member position is the party member's position in line, starts at 1
-    {
-        // Heal Player
-        // Add Tp to Player
-        // Use ability
-    }
 }

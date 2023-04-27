@@ -48,7 +48,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spot: 0
-  type: 0
+  isSelected: 0
+  enemyP: {fileID: 0}
+  playerP: {fileID: 0}
+  isEnemy: 0
 --- !u!1 &2803031329022619293
 GameObject:
   m_ObjectHideFlags: 0
@@ -578,7 +581,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6290129994255429943, guid: 04a624fa0bf2b6b4281eba600395f29a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 04a624fa0bf2b6b4281eba600395f29a, type: 3}
 --- !u!224 &3248012841183442946 stripped
 RectTransform:

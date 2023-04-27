@@ -8,19 +8,28 @@ public class PlayerParty : Party
     //public PartyMember[] activePartyMembers { get; private set; } // party members in the party
     public PlayerPartyMember[] partyMembers { get; private set; }
     public int currentMemberTurn;
+    public static int OverallMemberAmount = 0;
+    public static Inventory inventory = new Inventory();
 
     protected override void Awake()
     {
         base.Awake();
         activePartyMembers = new PlayerPartyMember[PartyAmount];
         partyMembers = new PlayerPartyMember[4];
-        partyMembers[0] = new PlayerPartyMember(0, "Kris", 270, 2, 18, 0, false, Consts.KrisBlue, Consts.KrisAccent1, Consts.KrisAccent2);    // Kris
-        partyMembers[1] = new PlayerPartyMember(1, "Susie", 340, 2, 23, 8, true, Consts.SusieMagenta, Consts.SusieAccent1, Consts.SusieAccent2);   // Susie
-        partyMembers[2] = new PlayerPartyMember(2, "Ralsei", 250, 2, 16, 16, true, Consts.RalseiGreen, Consts.RalseiAccent1, Consts.RalseiAccent2); // Ralsei
-        partyMembers[3] = new PlayerPartyMember(3, "Noelle", 160, 1, 7, 14, true, Consts.NoelleYellow, Consts.NoelleAccent1, Consts.NoelleAccent2);   // Noelle
+        partyMembers[0] = Consts.kris;    // Kris
+        partyMembers[1] = Consts.susie;   // Susie
+        partyMembers[2] = Consts.ralsei; // Ralsei
+        partyMembers[3] = Consts.noelle;   // Noelle
         AddMember(partyMembers[0]);
         AddMember(partyMembers[1]);
         AddMember(partyMembers[2]);
+        inventory.AddItem(Consts.bcPieSlice);
+        inventory.AddItem(Consts.bcPieFull);
+        inventory.AddItem(Consts.SnailPieSlice);
+        inventory.AddItem(Consts.SnailPieFull);
+        inventory.AddItem(Consts.bcPieSlice);
+        inventory.AddItem(Consts.bcPieFull);
+        Consts.playerParty = gameObject.GetComponent<PlayerParty>();
     }
 
     /// <summary>

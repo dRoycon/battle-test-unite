@@ -50,6 +50,22 @@ public static class Consts
     public static bool finishedAttackingTurn = true;
 
     #endregion
+
+    #region items
+    public static Item bcPieSlice = new Item(1, 90, "ButterscotchCinnamon Pie Slice", "bcSlice", "Homemade specialty, HEALS 90", false);
+    public static Item bcPieFull = new Item(1, 90, "ButterscotchCinnamon Pie", "bcPie", "Feels all with LOVE, HEALS PARTY 90", true);
+    public static Item SnailPieSlice = new Item(1, 90, "Snail Pie Slice", "sPie","Only a treat for some, HEALS ??", false);
+    public static Item SnailPieFull = new Item(1, 90, "Snail Pie Slice", "sPie", "Only a treat for some, HEALS PARTY ??", true);
+    #endregion
+
+    #region player/party
+    public static Party playerParty;
+
+    public static PlayerPartyMember kris = new PlayerPartyMember(0, "Kris", 270, 2, 18, 0, false, KrisBlue, KrisAccent1, KrisAccent2);
+    public static PlayerPartyMember susie = new PlayerPartyMember(1, "Susie", 340, 2, 23, 8, true, SusieMagenta, SusieAccent1, SusieAccent2);
+    public static PlayerPartyMember ralsei = new PlayerPartyMember(2, "Ralsei", 250, 2, 16, 16, true, RalseiGreen, RalseiAccent1, RalseiAccent2);
+    public static PlayerPartyMember noelle = new PlayerPartyMember(3, "Noelle", 160, 1, 7, 14, true, NoelleYellow, NoelleAccent1, NoelleAccent2);
+    #endregion
 }
 
 

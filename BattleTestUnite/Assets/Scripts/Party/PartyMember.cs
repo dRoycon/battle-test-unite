@@ -20,4 +20,9 @@ public class PartyMember
         this.attackPower = attackPower;
         hp = maxHp;
     }
+
+    public void Heal(int amt)
+    {
+        hp = Mathf.Clamp(hp + amt, hp, maxHp);
+    }
 }

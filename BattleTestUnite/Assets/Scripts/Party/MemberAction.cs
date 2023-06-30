@@ -8,11 +8,14 @@ public class MemberAction
     public string fullName { get; protected set; }
     public string nickname { get; protected set; }
     public string description { get; protected set; }
+    public string shortDescription { get; protected set; }
 
-    public MemberAction (int _id, string _fullName, string _nickname)
+    public MemberAction (int _id, string _fullName, string _nickname, string description, string shortDescription)
     {
         id = _id;
         fullName = fullName;
         nickname = _nickname;
+        this.shortDescription = shortDescription;
+        this.description = description;
     }
 }

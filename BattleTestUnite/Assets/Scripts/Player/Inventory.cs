@@ -26,25 +26,49 @@ public class Inventory : IUseAct
     }
 
     /// <summary>
-    /// if the item heals all members, set memberSpt to anything
+    /// 
     /// </summary>
     /// <param name="itemSpt"></param>
     /// <param name="memberSpt"></param>
-    public void Use(int itemSpt, int memberSpt)
+    public void Use(int itemId, int memberSpt)
     {
-        if (!items[itemSpt].healAll) // heals one
+        Consts.items[itemId].Use(memberSpt);
+    }
+
+    /// <summary>
+    /// This method removes an in item your inventory and returns the id of that item so that the item would be used at the end of your turn.
+    /// </summary>
+    /// <param name="spot"></param>
+    /// <returns></returns>
+    public int RemoveItem(int spot)
+    {
+        int res = items[spot].id;
+        items[spot] = null;
+        SortInventory();
+        return res;
+    }
+
+        /// <summary>
+        /// This method should be used in the party's turn when going back after a member used an item
+        /// </summary>
+        /// <param name="spot"></param>
+        /// <param name="id"></param>
+    public void InsertItem(int spot, int id) 
+    {
+        if (Count() < PocketSpace)
         {
-            Consts.playerParty.activePartyMembers[memberSpt].Heal(items[itemSpt].hp[memberSpt]);
-        }
-        else // heals all
-        {
-            for (int i = 0; i < Consts.playerParty.activePartyMembers.Length; i++)
+            Debug.Log("Inserted " + id + " to spot " + spot);
+            for (int i = PocketSpace-1; i >= spot; i--)
             {
-                Consts.playerParty.activePartyMembers[i].Heal(items[itemSpt].hp[i]);
+                if (i == spot) items[i] = Consts.items[id];
+                else if (items[i] == null)
+                {
+                    items[i] = items[i-1];
+                    items[i-1] = null;
+                }
+                else Debug.Log("Error here");
             }
         }
-        items[itemSpt] = null;
-        SortInventory();
     }
 
     public void SortInventory()
@@ -78,5 +102,16 @@ public class Inventory : IUseAct
             cnt++;
         }
         return cnt;
+    }
+
+    public override string ToString()
+    {
+        string res = "";
+        for (int i = 0; i < items.Length; i++)
+        {
+            if (items[i] == null) res += ", empty";
+            else res += ", " + items[i].nickname;
+        }
+        return res;
     }
 }

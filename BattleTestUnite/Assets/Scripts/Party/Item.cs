@@ -11,6 +11,7 @@ public class Item : MemberAction
     public int[] hp { get; private set; }
     public bool healAll { get; private set; }
 
+
     #region builders
 
     /// <summary>
@@ -21,10 +22,9 @@ public class Item : MemberAction
     /// <param name="_itemName"></param>
     /// <param name="_nickname"></param>
     /// <param name="healAll"></param>
-    public Item(int _id, int _hp, string _fullName, string _nickname, string description, bool healAll) : base(_id, _fullName, _nickname)
+    public Item(int _id, int _hp, string _fullName, string _nickname, string description, string shortDescription, bool healAll) : base(_id, _fullName, _nickname, description, shortDescription)
     {
         this.healAll = healAll;
-        this.description = description;
         hp = new int[PlayerParty.OverallMemberAmount];
         for (int i = 0; i < hp.Length; i++)
         {
@@ -40,15 +40,35 @@ public class Item : MemberAction
     /// <param name="_itemName"></param>
     /// <param name="_nickname"></param>
     /// <param name="healAll"></param>
-    public Item(int _id, int[] _hpArr, string _fullName, string _nickname, string description,bool healAll) : base(_id, _fullName, _nickname)
+    public Item(int _id, int[] _hpArr, string _fullName, string _nickname, string description, string shortDescription, bool healAll) : base(_id, _fullName, _nickname, description, shortDescription)
     {
         this.healAll = healAll;
         this.description = description;
+        hp = new int[PlayerParty.OverallMemberAmount];
         for (int i = 0; i < hp.Length; i++)
         {
             hp[i] = _hpArr[i];
         }
     }
     #endregion
+
+    /// <summary>
+    /// this method should be used at the end of the player's turn.
+    /// </summary>
+    /// <param name="memberSpt"></param>
+    public void Use(int memberSpt)
+    {
+        if (!healAll) // heals one
+        {
+            Consts.playerParty.activePartyMembers[memberSpt].Heal(hp[memberSpt]);
+        }
+        else // heals all
+        {
+            for (int i = 0; i < Consts.playerParty.activePartyMembers.Length; i++)
+            {
+                Consts.playerParty.activePartyMembers[i].Heal(hp[i]);
+            }
+        }
+    }
 
 }

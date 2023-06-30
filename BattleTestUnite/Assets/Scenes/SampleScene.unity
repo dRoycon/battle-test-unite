@@ -512,7 +512,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 3a2dfd81385c70b41b322011af9f76db, type: 3}
+  m_Texture: {fileID: 2800000, guid: 36d0f9a2cdfc2084095d0dc4aace8082, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -743,7 +743,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5652392349836799888, guid: 0b20898cc216fac4a82bb4f37ed54a0b, type: 3}
       propertyPath: dmgCooldown
-      value: 110
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 6904330407877109572, guid: 0b20898cc216fac4a82bb4f37ed54a0b, type: 3}
       propertyPath: m_IsTrigger
@@ -898,7 +898,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4938476215764302176, guid: 125bc31794e50594fa4fc1e6cf2f0187, type: 3}
       propertyPath: damage
-      value: 400
+      value: 30
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 125bc31794e50594fa4fc1e6cf2f0187, type: 3}

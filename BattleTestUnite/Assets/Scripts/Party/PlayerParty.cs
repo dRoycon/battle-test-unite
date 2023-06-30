@@ -8,7 +8,7 @@ public class PlayerParty : Party
     //public PartyMember[] activePartyMembers { get; private set; } // party members in the party
     public PlayerPartyMember[] partyMembers { get; private set; }
     public int currentMemberTurn;
-    public static int OverallMemberAmount = 0;
+    public static int OverallMemberAmount = 4;
     public static Inventory inventory = new Inventory();
 
     protected override void Awake()
@@ -23,12 +23,17 @@ public class PlayerParty : Party
         AddMember(partyMembers[0]);
         AddMember(partyMembers[1]);
         AddMember(partyMembers[2]);
-        inventory.AddItem(Consts.bcPieSlice);
-        inventory.AddItem(Consts.bcPieFull);
-        inventory.AddItem(Consts.SnailPieSlice);
-        inventory.AddItem(Consts.SnailPieFull);
-        inventory.AddItem(Consts.bcPieSlice);
-        inventory.AddItem(Consts.bcPieFull);
+        inventory.AddItem(Consts.items[0]);
+        inventory.AddItem(Consts.items[1]);
+        inventory.AddItem(Consts.items[2]);
+        inventory.AddItem(Consts.items[3]);
+        inventory.AddItem(Consts.items[0]);
+        inventory.AddItem(Consts.items[1]);
+        inventory.AddItem(Consts.items[4]);
+        inventory.AddItem(Consts.items[2]);
+        inventory.AddItem(Consts.items[3]);
+        inventory.AddItem(Consts.items[5]);
+        inventory.AddItem(Consts.items[1]);
         Consts.playerParty = gameObject.GetComponent<PlayerParty>();
     }
 

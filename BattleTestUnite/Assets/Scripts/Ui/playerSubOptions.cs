@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class playerSubOptions : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class playerSubOptions : MonoBehaviour
     public int type;
     [HideInInspector] public bool isDone;
     [HideInInspector] public int res;
+    private int pageLimit = 6;
+    private GameObject arrow;
+    private GameObject description;
     private void OnEnable()
     {
         pos = 1;
@@ -23,6 +27,19 @@ public class playerSubOptions : MonoBehaviour
     private void Start()
     {
         RenderPos();
+        if (type == 3)
+        {
+            VisiblePage(0, pageLimit - 1);
+            if (childAmt > pageLimit)
+            {
+                arrow = Instantiate((GameObject)Resources.Load("Prefabs/arrow", typeof(GameObject)), new Vector2(0,0), Quaternion.identity);
+                arrow.transform.parent = transform.GetChild(0);
+            }
+            description = Instantiate((GameObject)Resources.Load("Prefabs/BattleText", typeof(GameObject)), new Vector2(0, 0), Quaternion.identity);
+            description.transform.SetParent(transform.GetChild(0), false);
+            description.AddComponent<Description>();
+            SetDescription(1);
+        }
     }
 
     private void Update()
@@ -30,12 +47,32 @@ public class playerSubOptions : MonoBehaviour
         if (!isDone)
         {
             int prevPos = pos;
-            if (type  == 1) pos = select.options(childAmt, pos, false, "up", "down");
+            if (type == 1) pos = select.options(childAmt, pos, false, "up", "down");
             else if (type == 3) pos = select.options(childAmt, pos, true, "left", "right");
-            Debug.Log(pos);
             if (pos != prevPos)
             {
-                if (pos > 0) RenderPos();
+                if (pos > 0)
+                {
+                    RenderPos();
+                    if (type == 3) SetDescription(pos);
+                    if (type == 3 && ((pos > pageLimit && prevPos <= pageLimit) || (pos <= pageLimit && prevPos > pageLimit))) // next page
+                    {
+                        int start, end;
+                        if (pos > pageLimit && prevPos <= pageLimit) // next
+                        {
+                            start = pageLimit;
+                            end = children.Length;
+                        }
+                        else // prev
+                        {
+                            start = 0;
+                            end = pageLimit - 1;
+                        }
+                        if (arrow!=null)
+                            if (arrow.TryGetComponent<arrowHover>(out arrowHover hover)) hover.Flip();
+                        VisiblePage(start, end);
+                    }
+                }
                 else
                 {
                     res = pos;
@@ -49,10 +86,15 @@ public class playerSubOptions : MonoBehaviour
 
     private void RenderPos()
     {
-        if (type == 1) player.transform.position = new Vector2(-18.527f, children[pos - 1].transform.GetChild(2).transform.position.y - 0.15f);
+        if (type == 1)
+        {
+            float ob = children[pos - 1].transform.Find("BattleText").transform.position.y;
+            player.transform.position = new Vector2(-18.527f, ob);
+        }
+
         else if (type == 3)
         {
-            player.transform.position = new Vector2(-22.07f + (((pos+1)%2)*16.88925f), children[pos - 1].transform.position.y - 0.15f);
+            player.transform.position = new Vector2(-22.07f + (((pos + 1) % 2) * 16.88925f), children[pos - 1].transform.position.y - 0.15f);
         }
     }
 
@@ -61,7 +103,7 @@ public class playerSubOptions : MonoBehaviour
         if (type == 1) children = new GameObject[Party.PartyAmount];
         else if (type == 3) children = new GameObject[PlayerParty.inventory.Count()];
         childAmt = 0;
-        Debug.Log(transform.childCount);
+        //Debug.Log(transform.childCount);
         if (transform.childCount > 0)
         {
             for (int i = 0; i < transform.childCount; i++)
@@ -75,5 +117,19 @@ public class playerSubOptions : MonoBehaviour
                 childAmt++;
             }
         }
+    }
+
+    private void VisiblePage(int start, int end)
+    {
+        for (int i = 0; i < children.Length; i++)
+        {
+            if (i >= start && i <= end) children[i].GetComponent<TextMeshProUGUI>().enabled = true;
+            else children[i].GetComponent<TextMeshProUGUI>().enabled = false;
+        }
+    }
+
+    private void SetDescription(int x)
+    {
+        description.GetComponent<Description>().SetText(PlayerParty.inventory.items[x - 1].shortDescription);
     }
 }

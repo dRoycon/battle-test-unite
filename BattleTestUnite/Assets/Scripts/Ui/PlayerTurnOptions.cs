@@ -17,6 +17,11 @@ public class PlayerTurnOptions : MonoBehaviour
     private static int target1 = -1;
     private static int target2 = -1;
     private static int target3 = -1;
+    private static int itemSpt1 = -1;
+    private static int itemId1 = -1;
+    private static int itemSpt2 = -1;
+    private static int itemId2 = -1;
+    private static int itemId3 = -1;
     private static bool readyForNextTurn = false;
     public bool canMove;
     private bool playerTurnActivated;
@@ -24,6 +29,7 @@ public class PlayerTurnOptions : MonoBehaviour
     private bool playerTurnDeactivated;
     private bool subMenu;
     private int subOpt;
+    private int subSubOpt;
     CharacterUi charUi;
     GameObject player;
     EnemyParty enemyP;
@@ -192,12 +198,19 @@ public class PlayerTurnOptions : MonoBehaviour
 
                                 if (tpTurn1 != -1) tp.SetTp(tpTurn1);
                                 optTurn1 = -1;
+                                Debug.Log(itemSpt1 + " + " + itemId1 + " : " + PlayerParty.inventory.ToString());
+                                if (itemId1 != -1) PlayerParty.inventory.InsertItem(itemSpt1, itemId1);
+                                itemId1 = -1;
+                                itemSpt1 = -1;
                                 break;
                             case 2:
                                 optTurn2 = -1;
 
                                 if (tpTurn2 != -1) tp.SetTp(tpTurn2);
                                 tpTurn2 = -1;
+                                if (itemId2 != -1) PlayerParty.inventory.InsertItem(itemSpt2, itemId2);
+                                itemId2 = -1;
+                                itemSpt2 = -1;
                                 break;
                         }
                         timer = 0;
@@ -217,6 +230,7 @@ public class PlayerTurnOptions : MonoBehaviour
                         hudText.changeType(0);
                         hudText.isDone = false;
                         subOpt = hudText.subSelect;
+                        if (opt == -3) subSubOpt = hudText.subSubSelect;
                         subMenu = false;
                         if (subOpt != -100)
                         {
@@ -242,6 +256,27 @@ public class PlayerTurnOptions : MonoBehaviour
                                 case -2: // act / magic
                                     break;
                                 case -3: // item
+                                    switch (spot)
+                                    {
+                                        default: // 0
+                                            optTurn1 = 2;
+                                            itemSpt1 = -subOpt-1;
+                                            itemId1 = PlayerParty.inventory.RemoveItem(itemSpt1);
+                                            target1 = -subSubOpt-1;
+                                            break;
+                                        case 1:
+                                            optTurn2 = 2;
+                                            itemSpt2 = -subOpt-1;
+                                            itemId2 = PlayerParty.inventory.RemoveItem(itemSpt2);
+                                            target2 = -subSubOpt-1;
+                                            break;
+                                        case 2:
+                                            optTurn3 = 2;
+                                            itemId3 = PlayerParty.inventory.RemoveItem(-subOpt-1);
+                                            target3 = -subSubOpt-1;
+                                            break;
+
+                                    }
                                     break;
                                 case -4: // mercy
                                     switch (spot)
@@ -325,6 +360,9 @@ public class PlayerTurnOptions : MonoBehaviour
 
                     fightCnt++;
                     break;
+                case 2: // item
+                    Consts.items[itemId1].Use(target1);
+                    break;
                 case 3: // spare
                     if (enemyP.activePartyMembers[target1]!=null && enemyP.activePartyMembers[target1].hp>0)
                     {
@@ -363,6 +401,9 @@ public class PlayerTurnOptions : MonoBehaviour
                         if (Mathf.Abs(f1.transform.GetChild(0).transform.localPosition.x - f2.transform.GetChild(0).transform.localPosition.x) < cursorMinDistance)
                             f2.transform.GetChild(0).transform.localPosition = new Vector3(f1.transform.GetChild(0).transform.localPosition.x, f2.transform.GetChild(0).transform.localPosition.y);
                     }
+                    break;
+                case 2: // item
+                    Consts.items[itemId2].Use(target2);
                     break;
                 case 3: // spare
                     if (enemyP.activePartyMembers[target2] != null && enemyP.activePartyMembers[target2].hp > 0)
@@ -407,6 +448,9 @@ public class PlayerTurnOptions : MonoBehaviour
                             f3.transform.GetChild(0).transform.localPosition = new Vector3(f2.transform.GetChild(0).transform.localPosition.x, f3.transform.GetChild(0).transform.localPosition.y);
                     }
                     fightCnt++;
+                    break;
+                case 2: // item
+                    Consts.items[itemId3].Use(target3);
                     break;
                 case 3: // spare
                     if (enemyP.activePartyMembers[target3] != null && enemyP.activePartyMembers[target3].hp > 0)

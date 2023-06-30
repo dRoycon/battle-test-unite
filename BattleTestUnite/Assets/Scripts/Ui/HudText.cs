@@ -15,7 +15,9 @@ public class HudText : MonoBehaviour
     [HideInInspector] public PlayerParty playerParty;
     [HideInInspector] public EnemyParty enemyP;
     [HideInInspector] public int subSelect;
+    [HideInInspector] public int subSubSelect;
     [HideInInspector] public bool isDone;
+    [HideInInspector] public bool subSubOpt;
     public bool statsEnemy;
 
     void Start()
@@ -23,6 +25,7 @@ public class HudText : MonoBehaviour
         playerParty = FindObjectOfType<PlayerParty>();
         enemyP = FindObjectOfType<EnemyParty>();
         isDone = false;
+        subSubOpt = false;
     }
 
     public void changeType(int type)
@@ -56,9 +59,46 @@ public class HudText : MonoBehaviour
             {
                 if (transform.GetChild(0).GetComponent<playerSubOptions>().isDone)
                 {
-                    subSelect = transform.GetChild(0).GetComponent<playerSubOptions>().res;
-                    Destroy(transform.GetChild(0).gameObject);
-                    isDone = true;
+                    if (!subSubOpt) // sub options done
+                    {
+                        subSelect = transform.GetChild(0).GetComponent<playerSubOptions>().res;
+
+                        Destroy(transform.GetChild(0).gameObject);
+                        if (type == 3 && subSelect != -100)
+                        {
+                            if (!PlayerParty.inventory.items[(-subSelect)-1].healAll)
+                            {
+                                subSubOpt = true;
+                                changeType(1);
+                                transform.GetChild(0).GetComponent<playerSubOptions>().type = 1;
+                            }
+                            else
+                            {
+                                subSubSelect = -1;
+                                isDone = true;
+                            }
+                        }
+                        else isDone = true;
+                        //Debug.Log("opt: " + subSelect);
+                    }
+                    else // sub sub options done
+                    {
+                        subSubSelect = transform.GetChild(0).GetComponent<playerSubOptions>().res;
+                        if (subSubSelect == -100)
+                        {
+                            Destroy(transform.GetChild(0).gameObject);
+                            subSubOpt = false;
+                            changeType(3);
+                            transform.GetChild(0).GetComponent<playerSubOptions>().type = 3;
+                        }
+                        else
+                        {
+                            Destroy(transform.GetChild(0).gameObject);
+                            isDone = true;
+                            //Debug.Log("opt: " + subSelect + " , " + subSubSelect);
+                            subSubOpt = false;
+                        }
+                    }
                 }
             }
         }

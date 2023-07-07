@@ -62,12 +62,26 @@ public static class Consts
     };
     #endregion
 
+    #region spells
+    static public Dictionary<string, Magic> spells = new Dictionary<string, Magic>
+    {
+        {"healPrayer" ,  new Magic
+            (1, 2, 32, "Heal Prayer", "Heavenly light restores a little HP to one party member. Depends on Magic.", "Heal Ally")},
+       {"pacify" , new Magic
+            (2, 3, 16, "Pacify", "SPARE a tired enemy by putting them to sleep.", "Spare TIRED foe")},
+        {"rudeBuster" , new Magic
+            (3, 1, 50, "Rude Buster", "Deals moderate Rude-elemental damage to one foe. Depends on Attack & Magic.", "Rude Damage") },
+        {"ultimateHeal", new Magic
+            (4, 2, 100, "UltimateHeal", "Heals one ally to the best of Susie's ability.", "Best healing") }
+    };
+    #endregion
+
     #region player/party
-    public static Party playerParty;
+    public static PlayerParty playerParty;
 
     public static PlayerPartyMember kris = new PlayerPartyMember(0, "Kris", 270, 2, 18, 0, false, KrisBlue, KrisAccent1, KrisAccent2);
-    public static PlayerPartyMember susie = new PlayerPartyMember(1, "Susie", 340, 2, 23, 8, true, SusieMagenta, SusieAccent1, SusieAccent2);
-    public static PlayerPartyMember ralsei = new PlayerPartyMember(2, "Ralsei", 250, 2, 16, 16, true, RalseiGreen, RalseiAccent1, RalseiAccent2);
+    public static Susie susie = new Susie(1, 340, 2, 23, 8);
+    public static Ralsei ralsei = new Ralsei(2, 250, 2, 16, 16);
     public static PlayerPartyMember noelle = new PlayerPartyMember(3, "Noelle", 160, 1, 7, 14, true, NoelleYellow, NoelleAccent1, NoelleAccent2);
     #endregion
 }

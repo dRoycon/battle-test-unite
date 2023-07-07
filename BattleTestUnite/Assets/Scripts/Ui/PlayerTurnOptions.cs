@@ -22,6 +22,9 @@ public class PlayerTurnOptions : MonoBehaviour
     private static int itemSpt2 = -1;
     private static int itemId2 = -1;
     private static int itemId3 = -1;
+    private static int actSpt1 = -1;
+    private static int actSpt2 = -1;
+    private static int actSpt3 = -1;
     private static bool readyForNextTurn = false;
     public bool canMove;
     private bool playerTurnActivated;
@@ -74,7 +77,7 @@ public class PlayerTurnOptions : MonoBehaviour
     private int opt;
     private int prevOpt;
     private const int amt = 5;
-    private int spot;
+    private int spot; // goes from 1 to 3, not 0 to 2
 
     #endregion
     void Start()
@@ -158,8 +161,16 @@ public class PlayerTurnOptions : MonoBehaviour
                                 subMenu = true;
                                 break;
                             case -2: // act/magic
-                                if (((PlayerPartyMember)charUi.party.activePartyMembers[spot]).hasMagic) Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Magic");
-                                else Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Act");
+                                if (((PlayerPartyMember)charUi.party.activePartyMembers[spot]).hasMagic)
+                                { // magic
+                                    Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Magic");
+                                    hudText.GetComponent<HudText>().changeType(4);
+                                    subMenu = true;
+                                }
+                                else
+                                { // act
+                                    Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Act");
+                                }
                                 break;
                             case -3: // item
                                 Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Item");
@@ -202,6 +213,7 @@ public class PlayerTurnOptions : MonoBehaviour
                                 if (itemId1 != -1) PlayerParty.inventory.InsertItem(itemSpt1, itemId1);
                                 itemId1 = -1;
                                 itemSpt1 = -1;
+                                actSpt1 = -1;
                                 break;
                             case 2:
                                 optTurn2 = -1;
@@ -211,6 +223,7 @@ public class PlayerTurnOptions : MonoBehaviour
                                 if (itemId2 != -1) PlayerParty.inventory.InsertItem(itemSpt2, itemId2);
                                 itemId2 = -1;
                                 itemSpt2 = -1;
+                                actSpt2 = -1;
                                 break;
                         }
                         timer = 0;
@@ -230,7 +243,7 @@ public class PlayerTurnOptions : MonoBehaviour
                         hudText.changeType(0);
                         hudText.isDone = false;
                         subOpt = hudText.subSelect;
-                        if (opt == -3) subSubOpt = hudText.subSubSelect;
+                        if (opt == -3 || opt == -2) subSubOpt = hudText.subSubSelect;
                         subMenu = false;
                         if (subOpt != -100)
                         {
@@ -254,6 +267,24 @@ public class PlayerTurnOptions : MonoBehaviour
                                     }
                                     break;
                                 case -2: // act / magic
+                                    switch (spot)
+                                    {
+                                        default: // 0
+                                            optTurn1 = 1;
+                                            actSpt1 = -subOpt - 1;
+                                            target1 = -subSubOpt - 1;
+                                            break;
+                                        case 1:
+                                            optTurn2 = 1;
+                                            actSpt2 = -subOpt - 1;
+                                            target2 = -subSubOpt - 1;
+                                            break;
+                                        case 2:
+                                            optTurn3 = 1;
+                                            actSpt3 = -subOpt - 1;
+                                            target3 = -subSubOpt - 1;
+                                            break;
+                                    }
                                     break;
                                 case -3: // item
                                     switch (spot)
@@ -360,6 +391,16 @@ public class PlayerTurnOptions : MonoBehaviour
 
                     fightCnt++;
                     break;
+                case 1: // magic/act
+                    if (((PlayerPartyMember)charUi.party.activePartyMembers[spot-1]).hasMagic)
+                    { // magic
+                        ((MagicUser)(charUi.party.activePartyMembers[spot-1])).CastSpell(actSpt1, target1);
+                    }
+                    else
+                    { //act
+
+                    }
+                    break;
                 case 2: // item
                     Consts.items[itemId1].Use(target1);
                     break;
@@ -400,6 +441,16 @@ public class PlayerTurnOptions : MonoBehaviour
                     {
                         if (Mathf.Abs(f1.transform.GetChild(0).transform.localPosition.x - f2.transform.GetChild(0).transform.localPosition.x) < cursorMinDistance)
                             f2.transform.GetChild(0).transform.localPosition = new Vector3(f1.transform.GetChild(0).transform.localPosition.x, f2.transform.GetChild(0).transform.localPosition.y);
+                    }
+                    break;
+                case 1: // magic / act
+                    if (((PlayerPartyMember)charUi.party.activePartyMembers[spot-1]).hasMagic)
+                    { // magic
+                        ((MagicUser)(charUi.party.activePartyMembers[spot-1])).CastSpell(actSpt2, target2);
+                    }
+                    else
+                    { //act
+
                     }
                     break;
                 case 2: // item
@@ -448,6 +499,16 @@ public class PlayerTurnOptions : MonoBehaviour
                             f3.transform.GetChild(0).transform.localPosition = new Vector3(f2.transform.GetChild(0).transform.localPosition.x, f3.transform.GetChild(0).transform.localPosition.y);
                     }
                     fightCnt++;
+                    break;
+                case 1: // magic / act
+                    if (((PlayerPartyMember)charUi.party.activePartyMembers[spot-1]).hasMagic)
+                    { // magic
+                        ((MagicUser)(charUi.party.activePartyMembers[spot-1])).CastSpell(actSpt3, target3);
+                    }
+                    else
+                    { //act
+
+                    }
                     break;
                 case 2: // item
                     Consts.items[itemId3].Use(target3);

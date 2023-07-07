@@ -8,7 +8,7 @@ public class PlayerParty : Party
     //public PartyMember[] activePartyMembers { get; private set; } // party members in the party
     public PlayerPartyMember[] partyMembers { get; private set; }
     public int currentMemberTurn;
-    public static int OverallMemberAmount = 4;
+    public static int OverallMemberAmount = 0;
     public static Inventory inventory = new Inventory();
 
     protected override void Awake()

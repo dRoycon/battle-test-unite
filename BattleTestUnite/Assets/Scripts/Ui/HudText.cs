@@ -6,8 +6,9 @@ using TMPro;
 
 public class HudText : MonoBehaviour
 {
-    // 0 - none , 1 - PlayerPartyMemeber + health , 2 - EnemyPartyMemeber + health + spare, 3 - item/spell + description , 4 - diolouge 
+    // 0-none, 1-PlayerPartyMemeber+health, 2-EnemyPartyMemeber+health+spare, 3-item+description, 4-magic+description, 5-act+description, 6-diolouge 
     [HideInInspector] public int type;
+    [HideInInspector] public int oldType;
     [SerializeField] public GameObject text;
     [SerializeField] public GameObject statsText;
     [SerializeField] public TMP_FontAsset DT_sans;
@@ -18,7 +19,7 @@ public class HudText : MonoBehaviour
     [HideInInspector] public int subSubSelect;
     [HideInInspector] public bool isDone;
     [HideInInspector] public bool subSubOpt;
-    public bool statsEnemy;
+    [HideInInspector] public bool statsEnemy;
 
     void Start()
     {
@@ -36,17 +37,21 @@ public class HudText : MonoBehaviour
             default:
                 // nothing
                 break;
-            case 1:
+            case 1: // PlayerPartyMemeber + health
                 stats(false);
                 break;
-            case 2:
+            case 2: // EnemyPartyMemeber+health + spare
                 stats(true);
                 break;
-            case 3:
+            case 3: // item + description
                 useAct();
                 break;
-            case 4:
-                // diolouge
+            case 4: // magic + description
+                useAct();
+                break;
+            case 5: // act + description
+                break;
+            case 6: // diolouge
                 break;
         }
     }
@@ -64,11 +69,12 @@ public class HudText : MonoBehaviour
                         subSelect = transform.GetChild(0).GetComponent<playerSubOptions>().res;
 
                         Destroy(transform.GetChild(0).gameObject);
-                        if (type == 3 && subSelect != -100)
+                        if (type == 3 && subSelect != -100) // selecting item
                         {
                             if (!PlayerParty.inventory.items[(-subSelect)-1].healAll)
                             {
                                 subSubOpt = true;
+                                oldType = type;
                                 changeType(1);
                                 transform.GetChild(0).GetComponent<playerSubOptions>().type = 1;
                             }
@@ -76,6 +82,21 @@ public class HudText : MonoBehaviour
                             {
                                 subSubSelect = -1;
                                 isDone = true;
+                            }
+                        }
+                        else if (type == 4 && subSelect != -100) // selecting spell
+                        {
+                            subSubOpt = true;
+                            oldType = type;
+                            if (((MagicUser)(playerParty.activePartyMembers[playerParty.currentMemberTurn-1])).GetSpellType(-subSelect-1)==2)
+                            {    // heal
+                                changeType(1);
+                                transform.GetChild(0).GetComponent<playerSubOptions>().type = 1;
+                            }
+                            else // enemy related spells
+                            {
+                                changeType(2);
+                                transform.GetChild(0).GetComponent<playerSubOptions>().type = 2;
                             }
                         }
                         else isDone = true;
@@ -88,8 +109,9 @@ public class HudText : MonoBehaviour
                         {
                             Destroy(transform.GetChild(0).gameObject);
                             subSubOpt = false;
-                            changeType(3);
-                            transform.GetChild(0).GetComponent<playerSubOptions>().type = 3;
+                            changeType(oldType);
+                            transform.GetChild(0).GetComponent<playerSubOptions>().type = oldType;
+                            oldType = 0;
                         }
                         else
                         {
@@ -148,16 +170,31 @@ public class HudText : MonoBehaviour
         SubOpt.GetComponent<playerSubOptions>().UpdateChildren();
     }
 
-    private void useAct() // type 3 - item/spell/act
+    private void useAct() // type 3,4,5 - item/spell/act
     {
         GameObject SubOpt = new GameObject();
         SubOpt.AddComponent<playerSubOptions>();
         SubOpt.transform.SetParent(transform, false);
-        SubOpt.GetComponent<playerSubOptions>().type = 3;
+        SubOpt.GetComponent<playerSubOptions>().type = type;
         SubOpt.name = "SubOptions";
-
-        GameObject[] actions = new GameObject[PlayerParty.inventory.Count()];
-        for (int i = 0; i < PlayerParty.inventory.Count(); i++)
+        GameObject[] actions;
+        int length;
+        switch (type)
+        {
+            default: // 3 - item
+                length = PlayerParty.inventory.Count();
+                actions = new GameObject[length];
+                break;
+            case 4: // 4 - spell
+                length = ((MagicUser)(playerParty.activePartyMembers[playerParty.currentMemberTurn-1])).count;
+                actions = new GameObject[length];
+                break;
+            case 5: // 5 - act
+                length = 0;
+                actions = new GameObject[PlayerParty.inventory.Count()];
+                break;
+        }
+        for (int i = 0; i < length; i++)
         {
             actions[i] = Instantiate(text, new Vector2(0, 0), Quaternion.identity);
             actions[i].transform.SetParent(SubOpt.transform, false);

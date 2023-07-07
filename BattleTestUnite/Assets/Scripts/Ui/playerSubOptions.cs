@@ -27,7 +27,7 @@ public class playerSubOptions : MonoBehaviour
     private void Start()
     {
         RenderPos();
-        if (type == 3)
+        if (type == 3 || type == 4 || type == 5)
         {
             VisiblePage(0, pageLimit - 1);
             if (childAmt > pageLimit)
@@ -48,14 +48,14 @@ public class playerSubOptions : MonoBehaviour
         {
             int prevPos = pos;
             if (type == 1) pos = select.options(childAmt, pos, false, "up", "down");
-            else if (type == 3) pos = select.options(childAmt, pos, true, "left", "right");
-            if (pos != prevPos)
+            else if (type == 3 || type == 4 || type == 5) pos = select.options(childAmt, pos, true, "left", "right");
+            if (pos != prevPos) // shmooving
             {
                 if (pos > 0)
                 {
                     RenderPos();
-                    if (type == 3) SetDescription(pos);
-                    if (type == 3 && ((pos > pageLimit && prevPos <= pageLimit) || (pos <= pageLimit && prevPos > pageLimit))) // next page
+                    if (type == 3 || type == 4 || type == 5) SetDescription(pos);
+                    if ((type == 3 || type == 4 || type == 5) && ((pos > pageLimit && prevPos <= pageLimit) || (pos <= pageLimit && prevPos > pageLimit))) // next page
                     {
                         int start, end;
                         if (pos > pageLimit && prevPos <= pageLimit) // next
@@ -73,7 +73,7 @@ public class playerSubOptions : MonoBehaviour
                         VisiblePage(start, end);
                     }
                 }
-                else
+                else // confirm/back
                 {
                     res = pos;
                     player.transform.position = new Vector2(0, 19);
@@ -92,7 +92,7 @@ public class playerSubOptions : MonoBehaviour
             player.transform.position = new Vector2(-18.527f, ob);
         }
 
-        else if (type == 3)
+        else if (type == 3 || type == 4 || type == 5)
         {
             player.transform.position = new Vector2(-22.07f + (((pos + 1) % 2) * 16.88925f), children[pos - 1].transform.position.y - 0.15f);
         }
@@ -102,6 +102,9 @@ public class playerSubOptions : MonoBehaviour
     {
         if (type == 1) children = new GameObject[Party.PartyAmount];
         else if (type == 3) children = new GameObject[PlayerParty.inventory.Count()];
+        else if (type == 4) children = 
+                new GameObject[((MagicUser)(Consts.playerParty.activePartyMembers[Consts.playerParty.currentMemberTurn-1])).count];
+        else if (type == 5) { }
         childAmt = 0;
         //Debug.Log(transform.childCount);
         if (transform.childCount > 0)
@@ -111,7 +114,7 @@ public class playerSubOptions : MonoBehaviour
                 GameObject gb = transform.GetChild(i).gameObject;
                 if (type == 1)
                     if (gb.GetComponent<PartyMemText>()==null) break;
-                else if (type == 3)
+                else if (type == 3 || type == 4 || type == 5)
                         if (gb.GetComponent<ActTitle>() == null) break;
                 children[i] = gb;
                 childAmt++;
@@ -130,6 +133,17 @@ public class playerSubOptions : MonoBehaviour
 
     private void SetDescription(int x)
     {
-        description.GetComponent<Description>().SetText(PlayerParty.inventory.items[x - 1].shortDescription);
+        switch (type)
+        {
+            default: // 3 - item
+                description.GetComponent<Description>().SetText(PlayerParty.inventory.items[x - 1].shortDescription);
+                break;
+            case 4: // magic
+                description.GetComponent<Description>().SetText
+                    (((MagicUser)(Consts.playerParty.activePartyMembers[Consts.playerParty.currentMemberTurn-1])).spells[x-1].shortDescription);
+                break;
+            case 5: // act
+                break;
+        }
     }
 }

@@ -651,7 +651,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1753523098331487536, guid: 0b20898cc216fac4a82bb4f37ed54a0b, type: 3}
       propertyPath: MAX_SPEED
-      value: 7
+      value: 8.3
       objectReference: {fileID: 0}
     - target: {fileID: 1753523098331487536, guid: 0b20898cc216fac4a82bb4f37ed54a0b, type: 3}
       propertyPath: DASH_FORCE
@@ -663,7 +663,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1753523098331487536, guid: 0b20898cc216fac4a82bb4f37ed54a0b, type: 3}
       propertyPath: dashAmount
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1753523098331487536, guid: 0b20898cc216fac4a82bb4f37ed54a0b, type: 3}
       propertyPath: DASH_COOLDOWN
@@ -862,7 +862,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4938476213756907943, guid: 125bc31794e50594fa4fc1e6cf2f0187, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5
+      value: 1.72
       objectReference: {fileID: 0}
     - target: {fileID: 4938476213756907943, guid: 125bc31794e50594fa4fc1e6cf2f0187, type: 3}
       propertyPath: m_LocalPosition.z
@@ -898,7 +898,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4938476215764302176, guid: 125bc31794e50594fa4fc1e6cf2f0187, type: 3}
       propertyPath: damage
-      value: 30
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 125bc31794e50594fa4fc1e6cf2f0187, type: 3}

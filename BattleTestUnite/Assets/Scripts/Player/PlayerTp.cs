@@ -63,6 +63,7 @@ public class PlayerTp : MonoBehaviour
     public void SetTp(int _tp)
     {
         tp = Mathf.Clamp(_tp, 0, MAX_TP);
+        UpdtateTpPercent();
     }
 
     public void UpdtateTpPercent()

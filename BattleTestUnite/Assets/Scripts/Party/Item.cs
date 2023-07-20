@@ -66,7 +66,7 @@ public class Item : MemberAction
         {
             for (int i = 0; i < Consts.playerParty.activePartyMembers.Length; i++)
             {
-                Consts.playerParty.activePartyMembers[i].Heal(hp[i]);
+                Consts.playerParty.activePartyMembers[i].Heal(hp[Consts.playerParty.activePartyMembers[i].id]);
             }
         }
     }

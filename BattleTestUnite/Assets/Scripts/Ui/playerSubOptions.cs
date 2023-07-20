@@ -16,17 +16,30 @@ public class playerSubOptions : MonoBehaviour
     private int pageLimit = 6;
     private GameObject arrow;
     private GameObject description;
+    private PlayerTp tp;
+    private int currentMemberTurn;
+    private static int preSpentTp;
+    private static int oldPos;
+    private static bool cancelled = false;
     private void OnEnable()
     {
-        pos = 1;
+        if (cancelled)
+        {
+            pos = oldPos;
+            cancelled = false;
+        }
+        else pos = 1;
         player = GameObject.FindGameObjectWithTag("Player").gameObject;
         childAmt = 0;
         isDone = false;
         res = -100;
+        currentMemberTurn = Consts.playerParty.currentMemberTurn;
     }
     private void Start()
     {
+
         RenderPos();
+        tp = player.GetComponent<PlayerTp>();
         if (type == 3 || type == 4 || type == 5)
         {
             VisiblePage(0, pageLimit - 1);
@@ -39,6 +52,12 @@ public class playerSubOptions : MonoBehaviour
             description.transform.SetParent(transform.GetChild(0), false);
             description.AddComponent<Description>();
             SetDescription(1);
+            if (pos > pageLimit)
+            {
+                if (arrow != null)
+                    if (arrow.TryGetComponent<arrowHover>(out arrowHover hover)) hover.Flip();
+                VisiblePage(pageLimit, children.Length);
+            }
         }
     }
 
@@ -68,16 +87,53 @@ public class playerSubOptions : MonoBehaviour
                             start = 0;
                             end = pageLimit - 1;
                         }
-                        if (arrow!=null)
+                        if (arrow != null)
                             if (arrow.TryGetComponent<arrowHover>(out arrowHover hover)) hover.Flip();
                         VisiblePage(start, end);
                     }
                 }
+                else if (type == 4 && pos != -100) // check if has enough tp for spell/act
+                {
+                    int cost = ((MagicUser)(Consts.playerParty.activePartyMembers[currentMemberTurn - 1])).spells[-pos - 1].tpCost;
+                    if (cost > tp.TpPercent()) // doesnt
+                        pos = prevPos;
+                    else // does
+                    {
+                        Debug.Log("tp was " + tp.TpPercent());
+                        preSpentTp = tp.tp;
+                        oldPos = -pos;   // remember old pos for cancelling
+                        tp.SetTp((int)(tp.tp-(((float)cost/100f)*PlayerTp.MAX_TP)));
+                        Debug.Log("tp is now " + tp.TpPercent());
+                        CancelOrConfirm();
+                    }
+                }
                 else // confirm/back
                 {
-                    res = pos;
-                    player.transform.position = new Vector2(0, 19);
-                    isDone = true;
+                    HudText hud = transform.parent.GetComponent<HudText>();
+                    Debug.Log(preSpentTp + "@");
+                    if (hud.subSubOpt && hud.oldType == 4 && pos == -100 && preSpentTp != -1) // cancelling spell
+                    {
+                        tp.SetTp(preSpentTp);
+                        cancelled = true;
+                    }
+                    else if (hud.subSubOpt && hud.oldType == 4 && preSpentTp != -1) // remember tp shit 
+                        switch (currentMemberTurn - 1)
+                        {
+                            default: // 0
+                                PlayerTurnOptions.tpTurn1 = preSpentTp;
+                                break;
+                            case 1:
+                                PlayerTurnOptions.tpTurn2 = preSpentTp;
+                                break;
+                        }
+                    else if (hud.subSubOpt && hud.oldType == 3 && pos == -100)
+                    {
+                        Debug.Log(oldPos + "&&*");
+                        cancelled = true;
+                    }
+                    else if (!hud.subSubOpt && type == 3 && pos != -100) oldPos = -pos; // remember old pos for cancelling
+                    preSpentTp = -1;
+                    CancelOrConfirm();
                 }
             }
         }
@@ -120,6 +176,13 @@ public class playerSubOptions : MonoBehaviour
                 childAmt++;
             }
         }
+    }
+
+    private void CancelOrConfirm()
+    {
+        res = pos;
+        player.transform.position = new Vector2(0, 19);
+        isDone = true;
     }
 
     private void VisiblePage(int start, int end)

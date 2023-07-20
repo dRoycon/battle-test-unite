@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Kris : MonoBehaviour
 {
+    public const int krisId = 0;
     // Start is called before the first frame update
     void Start()
     {

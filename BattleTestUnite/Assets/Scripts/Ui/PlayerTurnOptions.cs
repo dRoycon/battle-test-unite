@@ -9,8 +9,8 @@ public class PlayerTurnOptions : MonoBehaviour
     #region variables
 
     private static int timer = 0;
-    private static int tpTurn1 = -1;
-    private static int tpTurn2 = -1;
+    public static int tpTurn1 = -1;
+    public static int tpTurn2 = -1;
     private static int optTurn1 = -1;
     private static int optTurn2 = -1;
     private static int optTurn3 = -1;
@@ -77,7 +77,7 @@ public class PlayerTurnOptions : MonoBehaviour
     private int opt;
     private int prevOpt;
     private const int amt = 5;
-    private int spot; // goes from 1 to 3, not 0 to 2
+    private int spot; // goes from 0 to 2
 
     #endregion
     void Start()
@@ -285,6 +285,7 @@ public class PlayerTurnOptions : MonoBehaviour
                                             target3 = -subSubOpt - 1;
                                             break;
                                     }
+                                    tpBar.CheckTp();
                                     break;
                                 case -3: // item
                                     switch (spot)
@@ -378,7 +379,6 @@ public class PlayerTurnOptions : MonoBehaviour
                 am = Instantiate(attackMaster, new Vector2(0, 0), Quaternion.identity);
                 Consts.finishedAttackingTurn = false;
             }
-
             switch (optTurn1) // first party member
             {
                 case 0: // fight
@@ -392,9 +392,9 @@ public class PlayerTurnOptions : MonoBehaviour
                     fightCnt++;
                     break;
                 case 1: // magic/act
-                    if (((PlayerPartyMember)charUi.party.activePartyMembers[spot-1]).hasMagic)
+                    if (((PlayerPartyMember)charUi.party.activePartyMembers[0]).hasMagic)
                     { // magic
-                        ((MagicUser)(charUi.party.activePartyMembers[spot-1])).CastSpell(actSpt1, target1);
+                        ((MagicUser)(charUi.party.activePartyMembers[0])).CastSpell(actSpt1, target1);
                     }
                     else
                     { //act
@@ -444,9 +444,9 @@ public class PlayerTurnOptions : MonoBehaviour
                     }
                     break;
                 case 1: // magic / act
-                    if (((PlayerPartyMember)charUi.party.activePartyMembers[spot-1]).hasMagic)
+                    if (((PlayerPartyMember)charUi.party.activePartyMembers[1]).hasMagic)
                     { // magic
-                        ((MagicUser)(charUi.party.activePartyMembers[spot-1])).CastSpell(actSpt2, target2);
+                        ((MagicUser)(charUi.party.activePartyMembers[1])).CastSpell(actSpt2, target2);
                     }
                     else
                     { //act
@@ -478,7 +478,7 @@ public class PlayerTurnOptions : MonoBehaviour
                     break;
             }
 
-            switch (optTurn3)
+            switch (optTurn3) // third party member
             {
                 case 0: // fight
                     f3 = Instantiate(fightBar, new Vector2(0, 0 - (fightCnt * 3)), Quaternion.identity);
@@ -501,9 +501,9 @@ public class PlayerTurnOptions : MonoBehaviour
                     fightCnt++;
                     break;
                 case 1: // magic / act
-                    if (((PlayerPartyMember)charUi.party.activePartyMembers[spot-1]).hasMagic)
+                    if (((PlayerPartyMember)charUi.party.activePartyMembers[2]).hasMagic)
                     { // magic
-                        ((MagicUser)(charUi.party.activePartyMembers[spot-1])).CastSpell(actSpt3, target3);
+                        ((MagicUser)(charUi.party.activePartyMembers[2])).CastSpell(actSpt3, target3);
                     }
                     else
                     { //act

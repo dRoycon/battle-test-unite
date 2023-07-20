@@ -20,6 +20,7 @@ public class HudText : MonoBehaviour
     [HideInInspector] public bool isDone;
     [HideInInspector] public bool subSubOpt;
     [HideInInspector] public bool statsEnemy;
+    private PlayerTp tp;
 
     void Start()
     {
@@ -27,6 +28,7 @@ public class HudText : MonoBehaviour
         enemyP = FindObjectOfType<EnemyParty>();
         isDone = false;
         subSubOpt = false;
+        tp = GameObject.FindGameObjectWithTag("Player").gameObject.GetComponent<PlayerTp>();
     }
 
     public void changeType(int type)
@@ -88,6 +90,12 @@ public class HudText : MonoBehaviour
                         {
                             subSubOpt = true;
                             oldType = type;
+                            if (((MagicUser)(playerParty.activePartyMembers[playerParty.currentMemberTurn - 1])).spells[-subSelect-1].isOnAll)
+                            {
+                                subSubSelect = -1;
+                                isDone = true;
+                            }
+                            else
                             if (((MagicUser)(playerParty.activePartyMembers[playerParty.currentMemberTurn-1])).GetSpellType(-subSelect-1)==2)
                             {    // heal
                                 changeType(1);
@@ -111,7 +119,6 @@ public class HudText : MonoBehaviour
                             subSubOpt = false;
                             changeType(oldType);
                             transform.GetChild(0).GetComponent<playerSubOptions>().type = oldType;
-                            oldType = 0;
                         }
                         else
                         {
@@ -120,6 +127,7 @@ public class HudText : MonoBehaviour
                             //Debug.Log("opt: " + subSelect + " , " + subSubSelect);
                             subSubOpt = false;
                         }
+                        oldType = 0;
                     }
                 }
             }
@@ -200,6 +208,20 @@ public class HudText : MonoBehaviour
             actions[i].transform.SetParent(SubOpt.transform, false);
             actions[i].GetComponent<ActTitle>().isOn = true;
             actions[i].name = i+"";
+            if (type == 4 || type == 5) // make gray if not enough tp
+            {
+                if (type == 4)
+                {
+                    int currentMemberTurn = Consts.playerParty.currentMemberTurn;
+                    int cost = ((MagicUser)(Consts.playerParty.activePartyMembers[currentMemberTurn - 1])).spells[i].tpCost;
+                    if (tp.TpPercent() < cost)
+                        actions[i].GetComponent<TextMeshProUGUI>().color = Consts.UnusableGray;
+                }
+                else if (type == 5)
+                {
+
+                }
+            }
             float x, y;
             if (i%2==0) x = actions[i].transform.localPosition.x - 464.3f;
             else x = actions[i].transform.localPosition.x;

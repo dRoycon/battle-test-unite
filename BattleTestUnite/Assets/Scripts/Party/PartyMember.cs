@@ -8,26 +8,26 @@ public class PartyMember
     public string nickname { get; protected set; }
     public int hp;
     public int maxHp { get; protected set; }
-    public float defensePower { get; protected set; }
-    public float attackPower { get; protected set; }
+    public int defenseLevel { get; protected set; }
+    public int attackLevel { get; protected set; }
 
-    public PartyMember(int id, string nickname, int maxHp, float defensePower, float attackPower)
+    public PartyMember(int id, string nickname, int maxHp, int defenseLevel, int attackLevel)
     {
         this.id = id;
         this.nickname = nickname;
         this.maxHp = maxHp;
-        this.defensePower = defensePower;
-        this.attackPower = attackPower;
+        this.defenseLevel = defenseLevel;
+        this.attackLevel = attackLevel;
         hp = maxHp;
     }
 
-    public PartyMember(int id, int maxHp, float defensePower, float attackPower)
+    public PartyMember(int id, int maxHp, int defenseLevel, int attackLevel)
     {
         this.id = id;
         nickname = "dummy";
         this.maxHp = maxHp;
-        this.defensePower = defensePower;
-        this.attackPower = attackPower;
+        this.defenseLevel = defenseLevel;
+        this.attackLevel = attackLevel;
         hp = maxHp;
     }
 

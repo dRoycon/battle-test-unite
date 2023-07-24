@@ -21,8 +21,8 @@ public class PlayerParty : Party
         partyMembers[2] = Consts.ralsei; // Ralsei
         partyMembers[3] = Consts.noelle;   // Noelle
         AddMember(partyMembers[0]);
+        AddMember(partyMembers[3]);
         AddMember(partyMembers[1]);
-        AddMember(partyMembers[2]);
         inventory.AddItem(Consts.items[0]);
         inventory.AddItem(Consts.items[1]);
         inventory.AddItem(Consts.items[2]);
@@ -72,5 +72,15 @@ public class PlayerParty : Party
     public override int CountActiveMembers()
     {
         return base.CountActiveMembers();
+    }
+
+    public int IsMemberInParty(int id)
+    {
+        for (int i = 0; i < PartyAmount; i++)
+        {
+            if (activePartyMembers[i].id == id)
+                return i;
+        }
+        return -1;
     }
 }

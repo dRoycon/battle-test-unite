@@ -26,8 +26,6 @@ public class MagicUser : PlayerPartyMember
         spells = new Magic[MAX_SPELLS];
         count = 0;
         magicPower = GetMagicPower(magicLevel);
-        attackPower = GetAttackPower(attackLevel);
-        defensePower = GetDefensePower(defenseLevel);
     }
 
     public void CastSpell(int num, int target)

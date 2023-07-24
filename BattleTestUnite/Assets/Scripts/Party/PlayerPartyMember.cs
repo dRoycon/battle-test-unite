@@ -31,6 +31,9 @@ public class PlayerPartyMember : PartyMember
         attackPower = GetAttackPower(attackLevel);
         defensePower = GetDefensePower(defenseLevel);
         PlayerParty.OverallMemberAmount++;
+        magicPower = GetMagicPower(magicLevel);
+        attackPower = GetAttackPower(attackLevel);
+        defensePower = GetDefensePower(defenseLevel);
     }
 
     public PlayerPartyMember(int id, int maxHp, int defenseLevel, int attackLevel) : base (id, maxHp, defenseLevel, attackLevel)
@@ -41,6 +44,9 @@ public class PlayerPartyMember : PartyMember
         accentColor2 = Color.white;
         hasMagic = false;
         PlayerParty.OverallMemberAmount++;
+        magicPower = 0;
+        attackPower = GetAttackPower(attackLevel);
+        defensePower = GetDefensePower(defenseLevel);
     }
 
     protected static float GetMagicPower(int magicLevel)

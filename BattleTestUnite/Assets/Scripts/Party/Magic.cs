@@ -19,7 +19,7 @@ public class Magic : IUseAct
         this.tpCost = tpCost;
         this.name = name;
         this.description = description;
-        this.shortDescription = shortDescription + " <br>" + tpCost + "% TP";
+        this.shortDescription = shortDescription + "<br><color=#FF7F27>" + tpCost + "% TP";
         this.isOnAll = isOnAll;
     }
 

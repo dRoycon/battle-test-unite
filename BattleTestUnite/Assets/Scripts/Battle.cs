@@ -15,6 +15,7 @@ public class Battle : MonoBehaviour
         enemyP.AddMember(dummy);
         Enemy dummy2 = new Enemy(2, "dummy2", 500, 2, 7, "the other silly fella");
         dummy2.isTired = true;
+        dummy2.AddAct(Consts.actions["TEST3"]);
         enemyP.AddMember(dummy2);
     }
 

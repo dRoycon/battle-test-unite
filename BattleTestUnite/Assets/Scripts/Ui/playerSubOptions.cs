@@ -13,7 +13,7 @@ public class playerSubOptions : MonoBehaviour
     public int type;
     [HideInInspector] public bool isDone;
     [HideInInspector] public int res;
-    private int pageLimit = 6;
+    private const int pageLimit = 6;
     private GameObject arrow;
     private GameObject description;
     private PlayerTp tp;
@@ -21,13 +21,11 @@ public class playerSubOptions : MonoBehaviour
     private static int preSpentTp;
     private static int oldPos;
     private static bool cancelled = false;
+    private HudText hud;
+
     private void OnEnable()
     {
-        if (cancelled)
-        {
-            pos = oldPos;
-            cancelled = false;
-        }
+        if (cancelled) pos = oldPos;
         else pos = 1;
         player = GameObject.FindGameObjectWithTag("Player").gameObject;
         childAmt = 0;
@@ -51,7 +49,8 @@ public class playerSubOptions : MonoBehaviour
             description = Instantiate((GameObject)Resources.Load("Prefabs/BattleText", typeof(GameObject)), new Vector2(0, 0), Quaternion.identity);
             description.transform.SetParent(transform.GetChild(0), false);
             description.AddComponent<Description>();
-            SetDescription(1);
+            if (cancelled) SetDescription(oldPos);
+            else SetDescription(1);
             if (pos > pageLimit)
             {
                 if (arrow != null)
@@ -59,6 +58,8 @@ public class playerSubOptions : MonoBehaviour
                 VisiblePage(pageLimit, children.Length);
             }
         }
+        hud = transform.parent.GetComponent<HudText>();
+        cancelled = false;
     }
 
     private void Update()
@@ -92,40 +93,67 @@ public class playerSubOptions : MonoBehaviour
                         VisiblePage(start, end);
                     }
                 }
-                else if (type == 4 && pos != -100) // check if has enough tp for spell/act
+                else if ((type == 4 || type == 5) && pos != -100) // check if has enough tp for spell/act
                 {
-                    int cost = ((MagicUser)(Consts.playerParty.activePartyMembers[currentMemberTurn - 1])).spells[-pos - 1].tpCost;
+                    int cost;
+                    if (type == 4) // get spell/act tp cost
+                        cost = ((MagicUser)(Consts.playerParty.activePartyMembers[currentMemberTurn - 1])).spells[-pos - 1].tpCost;
+                    else 
+                    {
+                        cost = ((Enemy)hud.enemyP.activePartyMembers[-hud.subSelect - 1]).actions[-pos - 1].tpCost;
+                        // check if members are in party for team acts
+                        if (cost > tp.TpPercent())
+                        {
+                            int ally1Id = ((Enemy)hud.enemyP.activePartyMembers[-hud.subSelect - 1]).actions[-pos - 1].ally1;
+                            if (ally1Id > -1)
+                            {
+                                int ally1Pos = Consts.playerParty.IsMemberInParty(ally1Id);
+                                if (ally1Pos > -1)
+                                {
+                                    if (Consts.playerParty.activePartyMembers[ally1Pos].hp > 0)
+                                    {
+                                        int ally2Id = ((Enemy)hud.enemyP.activePartyMembers[-hud.subSelect - 1]).actions[-pos - 1].ally2;
+                                        if (ally2Id > -1)
+                                        {
+                                            int ally2Pos = Consts.playerParty.IsMemberInParty(ally2Id);
+                                            if (ally2Pos > -1)
+                                            {
+                                                if (Consts.playerParty.activePartyMembers[ally2Pos].hp <= 0)
+                                                    cost = PlayerTp.MAX_TP + 1;
+                                            }
+                                            else cost = PlayerTp.MAX_TP + 1;
+                                        }
+                                    }
+                                    else cost = PlayerTp.MAX_TP + 1;
+                                }
+                                else cost = PlayerTp.MAX_TP + 1;
+                            }
+                        }
+                    }
+
                     if (cost > tp.TpPercent()) // doesnt
                         pos = prevPos;
                     else // does
                     {
-                        Debug.Log("tp was " + tp.TpPercent());
+                        Debug.Log("C");
                         preSpentTp = tp.tp;
+                        Debug.Log("tp was " + tp.TpPercent());
                         oldPos = -pos;   // remember old pos for cancelling
                         tp.SetTp((int)(tp.tp-(((float)cost/100f)*PlayerTp.MAX_TP)));
                         Debug.Log("tp is now " + tp.TpPercent());
+                        if (type == 5 || type == 4) RememberTp();
                         CancelOrConfirm();
                     }
                 }
                 else // confirm/back
                 {
-                    HudText hud = transform.parent.GetComponent<HudText>();
                     Debug.Log(preSpentTp + "@");
-                    if (hud.subSubOpt && hud.oldType == 4 && pos == -100 && preSpentTp != -1) // cancelling spell
+                    if (hud.subSubOpt && hud.oldType == 4 && pos == -100 && preSpentTp != -1) // cancelling spell/act
                     {
                         tp.SetTp(preSpentTp);
                         cancelled = true;
+                        Debug.Log("B");
                     }
-                    else if (hud.subSubOpt && hud.oldType == 4 && preSpentTp != -1) // remember tp shit 
-                        switch (currentMemberTurn - 1)
-                        {
-                            default: // 0
-                                PlayerTurnOptions.tpTurn1 = preSpentTp;
-                                break;
-                            case 1:
-                                PlayerTurnOptions.tpTurn2 = preSpentTp;
-                                break;
-                        }
                     else if (hud.subSubOpt && hud.oldType == 3 && pos == -100)
                     {
                         Debug.Log(oldPos + "&&*");
@@ -150,17 +178,21 @@ public class playerSubOptions : MonoBehaviour
 
         else if (type == 3 || type == 4 || type == 5)
         {
+            Debug.Log(pos+"****");
             player.transform.position = new Vector2(-22.07f + (((pos + 1) % 2) * 16.88925f), children[pos - 1].transform.position.y - 0.15f);
         }
     }
 
     public void UpdateChildren()
     {
+        hud = transform.parent.GetComponent<HudText>();
         if (type == 1) children = new GameObject[Party.PartyAmount];
         else if (type == 3) children = new GameObject[PlayerParty.inventory.Count()];
-        else if (type == 4) children = 
-                new GameObject[((MagicUser)(Consts.playerParty.activePartyMembers[Consts.playerParty.currentMemberTurn-1])).count];
-        else if (type == 5) { }
+        else if (type == 4) children =
+                new GameObject[((MagicUser)(Consts.playerParty.activePartyMembers[Consts.playerParty.currentMemberTurn - 1])).count];
+        else if (type == 5)
+            children = new GameObject[((Enemy)hud.enemyP.activePartyMembers[-hud.subSelect - 1]).count];
+
         childAmt = 0;
         //Debug.Log(transform.childCount);
         if (transform.childCount > 0)
@@ -194,6 +226,21 @@ public class playerSubOptions : MonoBehaviour
         }
     }
 
+    private void RememberTp()
+    {
+        switch (currentMemberTurn - 1)
+        {
+            default: // 0
+                Debug.Log("A");
+                PlayerTurnOptions.tpTurn1 = preSpentTp;
+                break;
+            case 1:
+                Debug.Log("A");
+                PlayerTurnOptions.tpTurn2 = preSpentTp;
+                break;
+        }
+    }
+
     private void SetDescription(int x)
     {
         switch (type)
@@ -206,6 +253,8 @@ public class playerSubOptions : MonoBehaviour
                     (((MagicUser)(Consts.playerParty.activePartyMembers[Consts.playerParty.currentMemberTurn-1])).spells[x-1].shortDescription);
                 break;
             case 5: // act
+                description.GetComponent<Description>().SetText
+                    (((Enemy)hud.enemyP.activePartyMembers[-hud.subSelect - 1]).actions[x-1].description);
                 break;
         }
     }

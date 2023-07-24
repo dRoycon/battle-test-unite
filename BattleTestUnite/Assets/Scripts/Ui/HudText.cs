@@ -6,7 +6,7 @@ using TMPro;
 
 public class HudText : MonoBehaviour
 {
-    // 0-none, 1-PlayerPartyMemeber+health, 2-EnemyPartyMemeber+health+spare, 3-item+description, 4-magic+description, 5-act+description, 6-diolouge 
+    // 0-none, 1-PlayerPartyMemeber+health, 2-EnemyPartyMemeber+health+spare, 3-item+description, 4-magic+description, 5-act+description, 6-actSelect, 7-diolouge
     [HideInInspector] public int type;
     [HideInInspector] public int oldType;
     [SerializeField] public GameObject text;
@@ -52,8 +52,12 @@ public class HudText : MonoBehaviour
                 useAct();
                 break;
             case 5: // act + description
+                useAct();
                 break;
-            case 6: // diolouge
+            case 6: // actSelect
+                stats(true);
+                break;
+            case 7: // diolouge
                 break;
         }
     }
@@ -73,7 +77,7 @@ public class HudText : MonoBehaviour
                         Destroy(transform.GetChild(0).gameObject);
                         if (type == 3 && subSelect != -100) // selecting item
                         {
-                            if (!PlayerParty.inventory.items[(-subSelect)-1].healAll)
+                            if (!PlayerParty.inventory.items[(-subSelect) - 1].healAll)
                             {
                                 subSubOpt = true;
                                 oldType = type;
@@ -88,24 +92,33 @@ public class HudText : MonoBehaviour
                         }
                         else if (type == 4 && subSelect != -100) // selecting spell
                         {
-                            subSubOpt = true;
-                            oldType = type;
-                            if (((MagicUser)(playerParty.activePartyMembers[playerParty.currentMemberTurn - 1])).spells[-subSelect-1].isOnAll)
+                            if (((MagicUser)(playerParty.activePartyMembers[playerParty.currentMemberTurn - 1])).spells[-subSelect - 1].isOnAll)
                             {
                                 subSubSelect = -1;
                                 isDone = true;
                             }
                             else
-                            if (((MagicUser)(playerParty.activePartyMembers[playerParty.currentMemberTurn-1])).GetSpellType(-subSelect-1)==2)
+                            if (((MagicUser)(playerParty.activePartyMembers[playerParty.currentMemberTurn - 1])).GetSpellType(-subSelect - 1) == 2)
                             {    // heal
+                                subSubOpt = true;
+                                oldType = type;
                                 changeType(1);
                                 transform.GetChild(0).GetComponent<playerSubOptions>().type = 1;
                             }
                             else // enemy related spells
                             {
+                                subSubOpt = true;
+                                oldType = type;
                                 changeType(2);
                                 transform.GetChild(0).GetComponent<playerSubOptions>().type = 2;
                             }
+                        }
+                        else if (type == 6 && subSelect != -100)
+                        {
+                            subSubOpt = true;
+                            oldType = type;
+                            changeType(5);
+                            transform.GetChild(0).GetComponent<playerSubOptions>().type = 5;
                         }
                         else isDone = true;
                         //Debug.Log("opt: " + subSelect);
@@ -194,12 +207,12 @@ public class HudText : MonoBehaviour
                 actions = new GameObject[length];
                 break;
             case 4: // 4 - spell
-                length = ((MagicUser)(playerParty.activePartyMembers[playerParty.currentMemberTurn-1])).count;
+                length = ((MagicUser)(playerParty.activePartyMembers[playerParty.currentMemberTurn - 1])).count;
                 actions = new GameObject[length];
                 break;
             case 5: // 5 - act
-                length = 0;
-                actions = new GameObject[PlayerParty.inventory.Count()];
+                length = ((Enemy)(enemyP.activePartyMembers[-subSelect - 1])).count;
+                actions = new GameObject[length];
                 break;
         }
         for (int i = 0; i < length; i++)
@@ -207,30 +220,58 @@ public class HudText : MonoBehaviour
             actions[i] = Instantiate(text, new Vector2(0, 0), Quaternion.identity);
             actions[i].transform.SetParent(SubOpt.transform, false);
             actions[i].GetComponent<ActTitle>().isOn = true;
-            actions[i].name = i+"";
+            actions[i].name = i + "";
             if (type == 4 || type == 5) // make gray if not enough tp
             {
+                int cost = 0;
                 if (type == 4)
                 {
                     int currentMemberTurn = Consts.playerParty.currentMemberTurn;
-                    int cost = ((MagicUser)(Consts.playerParty.activePartyMembers[currentMemberTurn - 1])).spells[i].tpCost;
-                    if (tp.TpPercent() < cost)
-                        actions[i].GetComponent<TextMeshProUGUI>().color = Consts.UnusableGray;
+                    cost = ((MagicUser)(Consts.playerParty.activePartyMembers[currentMemberTurn - 1])).spells[i].tpCost;
                 }
                 else if (type == 5)
                 {
-
+                    cost = ((Enemy)enemyP.activePartyMembers[-subSelect - 1]).actions[i].tpCost;
+                    // check if members are in party for team acts
+                    if (tp.TpPercent() < cost)
+                    {
+                        int ally1Id = ((Enemy)enemyP.activePartyMembers[-subSelect - 1]).actions[i].ally1;
+                        if (ally1Id > -1)
+                        {
+                            int ally1Pos = Consts.playerParty.IsMemberInParty(ally1Id);
+                            if (ally1Pos > -1)
+                            {
+                                if (Consts.playerParty.activePartyMembers[ally1Pos].hp > 0)
+                                {
+                                    int ally2Id = ((Enemy)enemyP.activePartyMembers[-subSelect - 1]).actions[i].ally2;
+                                    if (ally2Id > -1)
+                                    {
+                                        int ally2Pos = Consts.playerParty.IsMemberInParty(ally2Id);
+                                        if (ally2Pos > -1)
+                                        {
+                                            if (Consts.playerParty.activePartyMembers[ally2Pos].hp <= 0)
+                                                cost = PlayerTp.MAX_TP + 1;
+                                        }
+                                        else cost = PlayerTp.MAX_TP + 1;
+                                    }
+                                }
+                                else cost = PlayerTp.MAX_TP + 1;
+                            }
+                            else cost = PlayerTp.MAX_TP + 1;
+                        }
+                    }
+                    if (tp.TpPercent() < cost)
+                        actions[i].GetComponent<TextMeshProUGUI>().color = Consts.UnusableGray;
                 }
             }
             float x, y;
-            if (i%2==0) x = actions[i].transform.localPosition.x - 464.3f;
+            if (i % 2 == 0) x = actions[i].transform.localPosition.x - 464.3f;
             else x = actions[i].transform.localPosition.x;
-            if (i>=Inventory.PocketSpace/2) y = actions[i].transform.localPosition.y - (((i- (Inventory.PocketSpace/2)) / 2) * 58) -300.9901f;
+            if (i >= Inventory.PocketSpace / 2) y = actions[i].transform.localPosition.y - (((i - (Inventory.PocketSpace / 2)) / 2) * 58) - 300.9901f;
             else y = actions[i].transform.localPosition.y - (((i / 2) * 58)) - 300.9901f;
             actions[i].transform.localPosition = new Vector2(x, y);
             actions[i].GetComponent<ActTitle>().spot = i;
+            SubOpt.GetComponent<playerSubOptions>().UpdateChildren();
         }
-
-        SubOpt.GetComponent<playerSubOptions>().UpdateChildren();
     }
 }

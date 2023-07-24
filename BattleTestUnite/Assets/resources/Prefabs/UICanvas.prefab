@@ -576,9 +576,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '00
-
-'
+  m_text: 00
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d9c44ec84c542f2498ebb32231e4d2b6, type: 2}
   m_sharedMaterial: {fileID: 8914667905042742011, guid: d9c44ec84c542f2498ebb32231e4d2b6, type: 2}
@@ -617,7 +615,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: -32
+  m_lineSpacing: -40
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -986,12 +984,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
+  oldType: 0
   text: {fileID: 861626089186551970, guid: 04a624fa0bf2b6b4281eba600395f29a, type: 3}
   statsText: {fileID: 2803031329021703887, guid: b4bac4b2586ffcf45b11ebdd4315af06, type: 3}
   DT_sans: {fileID: 11400000, guid: d9c44ec84c542f2498ebb32231e4d2b6, type: 2}
   DT_mono: {fileID: 11400000, guid: 04c4439323aab8b40bedee07f6a48c05, type: 2}
   playerParty: {fileID: 0}
   enemyP: {fileID: 0}
+  subSelect: 0
+  subSubSelect: 0
+  isDone: 0
+  subSubOpt: 0
+  statsEnemy: 0
 --- !u!1 &8802357425446620431
 GameObject:
   m_ObjectHideFlags: 0

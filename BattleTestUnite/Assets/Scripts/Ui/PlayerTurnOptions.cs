@@ -170,6 +170,8 @@ public class PlayerTurnOptions : MonoBehaviour
                                 else
                                 { // act
                                     Debug.Log(charUi.party.activePartyMembers[spot].nickname + ": Act");
+                                    hudText.GetComponent<HudText>().changeType(6);
+                                    subMenu = true;
                                 }
                                 break;
                             case -3: // item

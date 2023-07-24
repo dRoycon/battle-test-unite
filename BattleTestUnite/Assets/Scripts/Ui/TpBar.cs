@@ -27,7 +27,7 @@ public class TpBar : MonoBehaviour
         currentTp.fillAmount = tp.TpPercent() / 100;
         if (tp.TpPercent() == 100)
         {
-            txt.text = "M \r\n A \r\n  X";
+            txt.text = "<color=#FFF200>M<br> A<br>  X";
             tpText.fillAmount = 0.5f;
             fullTp.enabled = true;
         }

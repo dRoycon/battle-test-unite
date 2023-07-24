@@ -7,7 +7,7 @@ public static class Consts
 {
 
     #region controls
-    static public Dictionary<string, KeyCode> keys = new Dictionary<string, KeyCode>
+    static public Dictionary<string, KeyCode> keys { get; private set; } = new Dictionary<string, KeyCode>
     {
         {"up" , KeyCode.UpArrow},
         {"left" , KeyCode.LeftArrow},
@@ -53,8 +53,9 @@ public static class Consts
     #endregion
 
 
-    #region spells
-    static public Dictionary<string, Magic> spells = new Dictionary<string, Magic>
+    #region spells and actions
+    // spells
+    static public Dictionary<string, Magic> spells { get; private set; } = new Dictionary<string, Magic>
     {
         {"healPrayer" ,  new Magic
             (1, 2, 32, "Heal Prayer", "Heavenly light restores a little HP to one party member. Depends on Magic.", "Heal <br>Ally", false)},
@@ -71,19 +72,31 @@ public static class Consts
         {"snowGrave", new Magic
             (7, 1, 200, "SnowGrave", "Deals fatal damage for enemies of NUGGET element.", "Fatal", true)}
     };
+    // actions
+    static public Dictionary<string, Act> actions { get; private set; } = new Dictionary<string, Act>
+    {
+        {"check" , new Act
+            (1, -1, -1, 0, "check", "", false)},
+        {"TEST1", new Act
+            (2, -1, -1, 0, "something", "Cool <br>act", false)},
+        {"TEST2", new Act
+            (3, 1, 3, 50, "somethingX", "Really <br>cool", false)},
+        {"TEST3", new Act
+            (4, 1, -1, 60, "PawsomeBuster", "WOAH", false)}
+    };
     #endregion
 
     #region player/party
     public static PlayerParty playerParty;
 
-    public static PlayerPartyMember kris = new PlayerPartyMember(Kris.krisId, "Kris", 270, 2, 18, 0, false, KrisBlue, KrisAccent1, KrisAccent2);
+    public static Kris kris = new Kris(Kris.krisId, 270, 2, 18);
     public static Susie susie = new Susie(Susie.susieId, 340, 2, 23, 9);
     public static Ralsei ralsei = new Ralsei(Ralsei.ralseiId, 250, 2, 16, 16);
     public static Noelle noelle = new Noelle(Noelle.noelleId, 160, 1, 7, 18);
     #endregion
 
     #region items
-    public static Item[] items = new Item[] {
+    public static Item[] items { get; private set; } = new Item[] {
     new Item(0, 200, "ButterscotchCinnamon Pie Slice", "bcSlice", "Homemade specialty, Heals 200HP", "Heals <br>200HP", false),
     new Item(1, 200, "ButterscotchCinnamon Pie", "bcPie", "Feels all with love, Heals Party 200HP", "Heals <br>Party <br>200HP", true),
     new Item(2, new int[]{ 220, 260, 110, 200}, "Snail Pie Slice", "sPieSlice", "Only a treat for some, Heals ??HP", "Heals <br>??HP", false),

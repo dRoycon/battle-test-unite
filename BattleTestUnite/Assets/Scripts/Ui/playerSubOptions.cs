@@ -43,7 +43,7 @@ public class playerSubOptions : MonoBehaviour
             VisiblePage(0, pageLimit - 1);
             if (childAmt > pageLimit)
             {
-                arrow = Instantiate((GameObject)Resources.Load("Prefabs/arrow", typeof(GameObject)), new Vector2(0,0), Quaternion.identity);
+                arrow = Instantiate((GameObject)Resources.Load("Prefabs/arrow", typeof(GameObject)), new Vector2(0, 0), Quaternion.identity);
                 arrow.transform.parent = transform.GetChild(0);
             }
             description = Instantiate((GameObject)Resources.Load("Prefabs/BattleText", typeof(GameObject)), new Vector2(0, 0), Quaternion.identity);
@@ -98,7 +98,7 @@ public class playerSubOptions : MonoBehaviour
                     int cost;
                     if (type == 4) // get spell/act tp cost
                         cost = ((MagicUser)(Consts.playerParty.activePartyMembers[currentMemberTurn - 1])).spells[-pos - 1].tpCost;
-                    else 
+                    else
                     {
                         cost = ((Enemy)hud.enemyP.activePartyMembers[-hud.subSelect - 1]).actions[-pos - 1].tpCost;
                         // check if members are in party for team acts
@@ -139,9 +139,28 @@ public class playerSubOptions : MonoBehaviour
                         preSpentTp = tp.tp;
                         Debug.Log("tp was " + tp.TpPercent());
                         oldPos = -pos;   // remember old pos for cancelling
-                        tp.SetTp((int)(tp.tp-(((float)cost/100f)*PlayerTp.MAX_TP)));
+                        tp.SetTp((int)(tp.tp - (((float)cost / 100f) * PlayerTp.MAX_TP)));
                         Debug.Log("tp is now " + tp.TpPercent());
-                        if (type == 5 || type == 4) RememberTp();
+                        if (type == 5 || type == 4)
+                        {
+                            RememberTp();
+                            if (type == 5)
+                            {
+                                int ally1Id = ((Enemy)hud.enemyP.activePartyMembers[-hud.subSelect - 1]).actions[-pos - 1].ally1;
+                                if (ally1Id > -1)
+                                {
+                                    int ally1Pos = Consts.playerParty.IsMemberInParty(ally1Id);
+
+                                    ((PlayerPartyMember)Consts.playerParty.activePartyMembers[ally1Pos]).skipTurn = true;
+                                    int ally2Id = ((Enemy)hud.enemyP.activePartyMembers[-hud.subSelect - 1]).actions[-pos - 1].ally2;
+                                    if (ally2Id > -1)
+                                    {
+                                        int ally2Pos = Consts.playerParty.IsMemberInParty(ally2Id);
+                                        ((PlayerPartyMember)Consts.playerParty.activePartyMembers[ally2Pos]).skipTurn = true;
+                                    }
+                                }
+                            }
+                        }
                         CancelOrConfirm();
                     }
                 }
@@ -154,6 +173,8 @@ public class playerSubOptions : MonoBehaviour
                         cancelled = true;
                         Debug.Log("B");
                     }
+                    else if (hud.subSubOpt && hud.oldType == 4 && preSpentTp != -1) // remember tp shit 
+                        RememberTp();
                     else if (hud.subSubOpt && hud.oldType == 3 && pos == -100)
                     {
                         Debug.Log(oldPos + "&&*");
@@ -166,7 +187,6 @@ public class playerSubOptions : MonoBehaviour
             }
         }
     }
-    
 
     private void RenderPos()
     {
@@ -178,7 +198,7 @@ public class playerSubOptions : MonoBehaviour
 
         else if (type == 3 || type == 4 || type == 5)
         {
-            Debug.Log(pos+"****");
+            Debug.Log(pos + "****");
             player.transform.position = new Vector2(-22.07f + (((pos + 1) % 2) * 16.88925f), children[pos - 1].transform.position.y - 0.15f);
         }
     }
@@ -201,8 +221,8 @@ public class playerSubOptions : MonoBehaviour
             {
                 GameObject gb = transform.GetChild(i).gameObject;
                 if (type == 1)
-                    if (gb.GetComponent<PartyMemText>()==null) break;
-                else if (type == 3 || type == 4 || type == 5)
+                    if (gb.GetComponent<PartyMemText>() == null) break;
+                    else if (type == 3 || type == 4 || type == 5)
                         if (gb.GetComponent<ActTitle>() == null) break;
                 children[i] = gb;
                 childAmt++;
@@ -228,16 +248,16 @@ public class playerSubOptions : MonoBehaviour
 
     private void RememberTp()
     {
-        switch (currentMemberTurn - 1)
+        Debug.Log(preSpentTp + "AAAA"+currentMemberTurn);
+        if (currentMemberTurn - 1 == 1)
         {
-            default: // 0
-                Debug.Log("A");
-                PlayerTurnOptions.tpTurn1 = preSpentTp;
-                break;
-            case 1:
-                Debug.Log("A");
-                PlayerTurnOptions.tpTurn2 = preSpentTp;
-                break;
+            Debug.Log("A");
+            PlayerTurnOptions.tpTurn2 = preSpentTp;
+        }
+        else if (currentMemberTurn - 1 == 0)
+        {
+            Debug.Log("A");
+            PlayerTurnOptions.tpTurn1 = preSpentTp;
         }
     }
 
@@ -250,11 +270,11 @@ public class playerSubOptions : MonoBehaviour
                 break;
             case 4: // magic
                 description.GetComponent<Description>().SetText
-                    (((MagicUser)(Consts.playerParty.activePartyMembers[Consts.playerParty.currentMemberTurn-1])).spells[x-1].shortDescription);
+                    (((MagicUser)(Consts.playerParty.activePartyMembers[Consts.playerParty.currentMemberTurn - 1])).spells[x - 1].shortDescription);
                 break;
             case 5: // act
                 description.GetComponent<Description>().SetText
-                    (((Enemy)hud.enemyP.activePartyMembers[-hud.subSelect - 1]).actions[x-1].description);
+                    (((Enemy)hud.enemyP.activePartyMembers[-hud.subSelect - 1]).actions[x - 1].description);
                 break;
         }
     }

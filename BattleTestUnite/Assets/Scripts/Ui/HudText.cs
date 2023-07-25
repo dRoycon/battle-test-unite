@@ -260,9 +260,9 @@ public class HudText : MonoBehaviour
                             else cost = PlayerTp.MAX_TP + 1;
                         }
                     }
-                    if (tp.TpPercent() < cost)
-                        actions[i].GetComponent<TextMeshProUGUI>().color = Consts.UnusableGray;
                 }
+                if (tp.TpPercent() < cost)
+                    actions[i].GetComponent<TextMeshProUGUI>().color = Consts.UnusableGray;
             }
             float x, y;
             if (i % 2 == 0) x = actions[i].transform.localPosition.x - 464.3f;

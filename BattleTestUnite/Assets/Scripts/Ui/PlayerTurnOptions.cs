@@ -129,13 +129,16 @@ public class PlayerTurnOptions : MonoBehaviour
                     canMove = true;
                     playerTurnActivated = false;
                     playerTurnDeactivated = false;
-                    if (charUi.party.activePartyMembers[spot].hp <= 0)
+                    // skip turn if their hp is <0, or if their turn is used for a team action
+                    if (charUi.party.activePartyMembers[spot].hp <= 0 || ((PlayerPartyMember)charUi.party.activePartyMembers[spot]).skipTurn)
                     {
                         PlayerTurnDeactivated();
                         EndTurn(1);
                     }
                 }
             }
+            else if (charUi.party.activePartyMembers[spot].hp > 0)
+                charUi.canMove = true;
 
             if (canMove && charUi.party.currentMemberTurn - 1 == spot) // When It's that members turn
             {
@@ -204,7 +207,18 @@ public class PlayerTurnOptions : MonoBehaviour
                     }
                     else if (spot > 0) // If You Go Back
                     {
-                        switch (spot)
+                        int backSpt = 0;
+                        for (int i = 0; i < spot; i++) // find which player to go back to
+                        {
+                            if (charUi.party.activePartyMembers[i]!=null)
+                            {
+                                if (charUi.party.activePartyMembers[i].hp > 0 && !((PlayerPartyMember)charUi.party.activePartyMembers[i]).skipTurn)
+                                    backSpt = i;
+                            }
+                        }
+                        backSpt++;
+                        Debug.Log(backSpt);
+                        switch (backSpt)
                         {
                             default: // spot 1
                                 optTurn1 = -1;
@@ -216,6 +230,10 @@ public class PlayerTurnOptions : MonoBehaviour
                                 itemId1 = -1;
                                 itemSpt1 = -1;
                                 actSpt1 = -1;
+                                tpTurn2 = -1;
+                                itemId2 = -1;
+                                itemSpt2 = -1;
+                                actSpt2 = -1;
                                 break;
                             case 2:
                                 optTurn2 = -1;
@@ -232,7 +250,7 @@ public class PlayerTurnOptions : MonoBehaviour
                         options[prevOpt - 1].color = Consts.StaticOrange;
                         texts[prevOpt - 1].enabled = false;
                         opt = 1;
-                        charUi.party.currentMemberTurn = spot;
+                        charUi.party.currentMemberTurn = backSpt;
                         tp.UpdtateTpPercent();
                         tpBar.CheckTp();
                     }
@@ -537,6 +555,8 @@ public class PlayerTurnOptions : MonoBehaviour
                     break;
             }
 
+            charUi.party.RefuleTurns();
+
             if (optTurn1==0 || optTurn2==0 || optTurn3==0) am.GetComponent<AttackMaster>().childAmt = fightCnt;
             optTurn1 = -1;
             optTurn2 = -1;
@@ -557,6 +577,7 @@ public class PlayerTurnOptions : MonoBehaviour
 
     private void PlayerTurnDeactivated()
     {
+        Debug.Log("canMove=" + canMove + " playerTurn=" + playerTurn + " playerTurnDeact=" + playerTurnDeactivated + " playerTurnActi=" + playerTurnActivated);
         canMove = false;
         options[opt - 1].color = Consts.StaticOrange;
         opt = 1;

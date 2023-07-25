@@ -21,8 +21,9 @@ public class PlayerParty : Party
         partyMembers[2] = Consts.ralsei; // Ralsei
         partyMembers[3] = Consts.noelle;   // Noelle
         AddMember(partyMembers[0]);
-        AddMember(partyMembers[3]);
         AddMember(partyMembers[1]);
+        AddMember(partyMembers[3]);
+        //activePartyMembers[1].hp = 0;
         inventory.AddItem(Consts.items[0]);
         inventory.AddItem(Consts.items[1]);
         inventory.AddItem(Consts.items[2]);
@@ -78,9 +79,23 @@ public class PlayerParty : Party
     {
         for (int i = 0; i < PartyAmount; i++)
         {
-            if (activePartyMembers[i].id == id)
-                return i;
+            if (activePartyMembers[i] != null)
+            {
+                if (activePartyMembers[i].id == id)
+                    return i;
+            }
         }
         return -1;
+    }
+
+    /// <summary>
+    /// give party members their turns back from team actions
+    /// </summary>
+    public void RefuleTurns()
+    {
+        for (int i = 0; i < PartyAmount; i++)
+        {
+            ((PlayerPartyMember)activePartyMembers[i]).skipTurn = false;
+        }
     }
 }

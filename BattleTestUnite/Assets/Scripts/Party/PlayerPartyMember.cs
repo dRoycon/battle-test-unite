@@ -18,6 +18,7 @@ public class PlayerPartyMember : PartyMember
     public Color accentColor1 { get; protected set; }
     public Color accentColor2 { get; protected set; }
     public bool hasMagic { get; protected set; }
+    public bool skipTurn;
 
     public PlayerPartyMember(int id, string nickname, int maxHp, int defenseLevel, int attackLevel, int magicLevel, bool hasMagic, Color color, Color accentColor1, Color accentColor2)
         : base(id, nickname, maxHp, defenseLevel, attackLevel)

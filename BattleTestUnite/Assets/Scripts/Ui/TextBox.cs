@@ -20,32 +20,68 @@ public class TextBox : MonoBehaviour
     public bool finishedWriting { get; private set; }
     public bool isDone { get; private set; }
 
+    private bool isPressDone;
+    private bool isPressHurry;
+
     void Start()
     {
         pos = 0;
         count = 0;
         willWrite = true;
-        changeSpeed = false;
+        changeSpeed = true;
         text = GetComponent<TextMeshProUGUI>();
         text.text = "";
         checkWord = false;
         finishedWriting = false;
         isWriting = false;
         maxCharPer = 34;
+        isPressDone = false;
+        isPressHurry = false;
+        isDone = true;
         //
-        Write(new Dialogue("This sentence number 1, how are yall doing ooga booga<br>this is sentence 2!!", 1, 0, 0));
+        //Write(new Dialogue("<color=red>This sentence <color=white>number 1, how are <color=blue>yall doing ooga <color=yellow>booga<br>this is sentence 2!!", 1, 0, 0));
     }
 
     void Update()
     {
+        if (!isDone)
+            if (Input.GetKeyDown(Consts.keys["confirm"])) isPressDone = true;
         if (!finishedWriting && isWriting)
         {
-            if (count == tickPerChar)
+            if (Input.GetKeyDown(Consts.keys["cancel"])) isPressHurry = true;
+            if (changeSpeed)
+            {
+                if (count == tickPerChar)
+                {
+                    GetText(content);
+                    count = 0;
+                }
+                if (changeSpeed) count++;
+            }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (isPressHurry)
+        {
+            Debug.Log("X");
+            changeSpeed = false;
+            isPressHurry = false;
+            for (int i = pos; i < content.Length - 3; i++)
             {
                 GetText(content);
-                count = 0;
             }
-            count++;
+        }
+        if (isPressDone)
+        {
+            Debug.Log("Z");
+            isPressDone = false;
+            if (finishedWriting)
+            {
+                isDone = true;
+                text.text = "";
+            }
         }
     }
 
@@ -53,17 +89,24 @@ public class TextBox : MonoBehaviour
     {
         pos = 0;
         count = 0;
+        charPer = 0;
         willWrite = true;
-        changeSpeed = false;
+        changeSpeed = true;
         text.text = "";
         checkWord = false;
         finishedWriting = false;
         isWriting = true;
+        isDone = false;
         content = d.content;
         tickPerChar = 20;
-        DisplayText("* ");
+        DisplayText("<color=white>* ");
         if (d.speaker == 0) maxCharPer = 34;
         else maxCharPer = 28;
+    }
+
+    public void Write(string str)
+    {
+        Write(new Dialogue(str, 0, 0, 0));
     }
 
     void GetText(string str)
@@ -76,10 +119,23 @@ public class TextBox : MonoBehaviour
             {
                 add += GetCommand(str);
                 DisplayText(add);
+                if (pos >= str.Length)
+                {
+                    finishedWriting = true;
+                    isWriting = false;
+                }
+                else GetText(str);
             }
             else if (ch == '@')
             {
-                tickPerChar = ChangeSpeed(str);
+                int newSpeed = ChangeSpeed(str);
+                if (changeSpeed) tickPerChar = newSpeed;
+                if (pos >= str.Length)
+                {
+                    finishedWriting = true;
+                    isWriting = false;
+                }
+                else GetText(str);
             }
             else if (checkWord || ch == ' ')
             {
@@ -90,6 +146,7 @@ public class TextBox : MonoBehaviour
                     charPer++;
                     checkWord = false;
                 }
+                pos++;
             }
             else
             {
@@ -98,11 +155,15 @@ public class TextBox : MonoBehaviour
                 add += ch;
                 checkWord = true;
                 DisplayText(add);
+                pos++;
             }
         }
         Debug.Log(charPer);
-        pos++;
-        if (pos >= str.Length) finishedWriting = true;
+        if (pos >= str.Length)
+        {
+            finishedWriting = true;
+            isWriting = false;
+        }
     }
 
     void DisplayText(string add)
@@ -145,8 +206,9 @@ public class TextBox : MonoBehaviour
         if (res == "<br>")
         {
             charPer = 0;
-            res = "<br>* ";
+            res = "<color=white><br>* ";
         }
+        pos++;
         checkWord = false;
         return res;
     }
@@ -159,8 +221,9 @@ public class TextBox : MonoBehaviour
         {
             int x = (int)str[pos]-48;
             pos++;
-            speed = (speed * 10) + x;
+            if (changeSpeed) speed = (speed * 10) + x;
         }
+        pos++;
         checkWord = false;
         return speed;
     }

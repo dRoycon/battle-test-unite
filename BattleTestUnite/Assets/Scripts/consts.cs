@@ -70,7 +70,10 @@ public static class Consts
         {"iceShock", new Magic
             (6, 1, 16, "IceShock", "Deal magical ICE damage to one enemy.", "Damage <br>w/ ICE", false) },
         {"snowGrave", new Magic
-            (7, 1, 200, "SnowGrave", "Deals fatal damage for enemies of NUGGET element.", "Fatal", true)}
+            (7, 1, 200, "SnowGrave", "Deals fatal damage for enemies of NUGGET element.", "Fatal", true)},
+        {"sAct", new Magic(8, 0, 0, "S-Act", "", "", false)},
+        {"rAct", new Magic(9, 0, 0, "R-Act", "", "", false)},
+        {"nAct", new Magic(10, 0, 0, "N-Act", "", "", false)}
     };
     // actions
     static public Dictionary<string, Act> actions { get; private set; } = new Dictionary<string, Act>
@@ -82,7 +85,7 @@ public static class Consts
         {"TEST2", new Act
             (3, 1, 3, 50, "somethingX", "Really <br>cool", false)},
         {"TEST3", new Act
-            (4, 1, -1, 60, "PawsomeBuster", "WOAH", false)}
+            (4, 1, -1, 0, "PawsomeBuster", "WOAH", false)}
     };
     #endregion
 

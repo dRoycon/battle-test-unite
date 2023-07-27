@@ -102,7 +102,7 @@ public class playerSubOptions : MonoBehaviour
                     {
                         cost = ((Enemy)hud.enemyP.activePartyMembers[-hud.subSelect - 1]).actions[-pos - 1].tpCost;
                         // check if members are in party for team acts
-                        if (cost > tp.TpPercent())
+                        if (cost >= tp.TpPercent())
                         {
                             int ally1Id = ((Enemy)hud.enemyP.activePartyMembers[-hud.subSelect - 1]).actions[-pos - 1].ally1;
                             if (ally1Id > -1)
@@ -135,7 +135,7 @@ public class playerSubOptions : MonoBehaviour
                         pos = prevPos;
                     else // does
                     {
-                        Debug.Log("C");
+                        Debug.Log("is casting");
                         preSpentTp = tp.tp;
                         Debug.Log("tp was " + tp.TpPercent());
                         oldPos = -pos;   // remember old pos for cancelling
@@ -143,16 +143,18 @@ public class playerSubOptions : MonoBehaviour
                         Debug.Log("tp is now " + tp.TpPercent());
                         if (type == 5 || type == 4)
                         {
+                            Debug.Log("Mot");
                             RememberTp();
                             if (type == 5)
                             {
                                 int ally1Id = ((Enemy)hud.enemyP.activePartyMembers[-hud.subSelect - 1]).actions[-pos - 1].ally1;
+                                Debug.Log(ally1Id + "ally1");
                                 if (ally1Id > -1)
                                 {
                                     int ally1Pos = Consts.playerParty.IsMemberInParty(ally1Id);
-
                                     ((PlayerPartyMember)Consts.playerParty.activePartyMembers[ally1Pos]).skipTurn = true;
                                     int ally2Id = ((Enemy)hud.enemyP.activePartyMembers[-hud.subSelect - 1]).actions[-pos - 1].ally2;
+                                    Debug.Log(ally2Id + "ally2");
                                     if (ally2Id > -1)
                                     {
                                         int ally2Pos = Consts.playerParty.IsMemberInParty(ally2Id);

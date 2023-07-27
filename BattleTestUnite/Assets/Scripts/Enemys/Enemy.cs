@@ -55,4 +55,19 @@ public class Enemy : PartyMember
             }
         }
     }
+
+    public string Act(int action, int targetSpt)
+    {
+        string res = "";
+        switch (id)
+        {
+            default: // 1 - check
+                res = nickname + " - " + check;
+                break;
+            case 2:
+                break;
+        }
+        actions[action].Use(targetSpt, Kris.krisId);
+        return res;
+    }
 }

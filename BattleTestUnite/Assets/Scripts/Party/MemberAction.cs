@@ -13,7 +13,7 @@ public class MemberAction
     public MemberAction (int _id, string _fullName, string _nickname, string description, string shortDescription)
     {
         id = _id;
-        fullName = fullName;
+        fullName = _fullName;
         nickname = _nickname;
         this.shortDescription = shortDescription;
         this.description = description;

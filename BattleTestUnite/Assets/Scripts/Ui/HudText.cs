@@ -233,7 +233,7 @@ public class HudText : MonoBehaviour
                 {
                     cost = ((Enemy)enemyP.activePartyMembers[-subSelect - 1]).actions[i].tpCost;
                     // check if members are in party for team acts
-                    if (tp.TpPercent() < cost)
+                    if (tp.TpPercent() >= cost)
                     {
                         int ally1Id = ((Enemy)enemyP.activePartyMembers[-subSelect - 1]).actions[i].ally1;
                         if (ally1Id > -1)

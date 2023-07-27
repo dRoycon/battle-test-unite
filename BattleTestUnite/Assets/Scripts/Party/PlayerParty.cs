@@ -23,7 +23,9 @@ public class PlayerParty : Party
         AddMember(partyMembers[0]);
         AddMember(partyMembers[1]);
         AddMember(partyMembers[3]);
-        //activePartyMembers[1].hp = 0;
+        activePartyMembers[0].hp = 10;
+        activePartyMembers[1].hp = 10;
+        activePartyMembers[2].hp = 10;
         inventory.AddItem(Consts.items[0]);
         inventory.AddItem(Consts.items[1]);
         inventory.AddItem(Consts.items[2]);

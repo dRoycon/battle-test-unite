@@ -7,6 +7,7 @@ public class characterMaster : MonoBehaviour
     [SerializeField] private GameObject chara;
     [SerializeField] private float distance;
     [SerializeField] public HudText hudText;
+    [SerializeField] public GameObject textBox;
     private PlayerParty party;
     private int pMemberAmt;
 

@@ -913,6 +913,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: textBox
       objectReference: {fileID: 0}
+    - target: {fileID: 158046333712928409, guid: 20fe3b32e1f47ae449384a25b4c90d67, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1082445327905487776, guid: 20fe3b32e1f47ae449384a25b4c90d67, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1269253154511600327, guid: 20fe3b32e1f47ae449384a25b4c90d67, type: 3}
       propertyPath: distance
       value: 4.2
@@ -925,6 +933,14 @@ PrefabInstance:
       propertyPath: DT_sans
       value: 
       objectReference: {fileID: 11400000, guid: d9c44ec84c542f2498ebb32231e4d2b6, type: 2}
+    - target: {fileID: 2947220000961311259, guid: 20fe3b32e1f47ae449384a25b4c90d67, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3527236919009969003, guid: 20fe3b32e1f47ae449384a25b4c90d67, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3567427446220891394, guid: 20fe3b32e1f47ae449384a25b4c90d67, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -952,6 +968,10 @@ PrefabInstance:
     - target: {fileID: 4786456533448375579, guid: 20fe3b32e1f47ae449384a25b4c90d67, type: 3}
       propertyPath: m_RootOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5383598013071723473, guid: 20fe3b32e1f47ae449384a25b4c90d67, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5383598013071723473, guid: 20fe3b32e1f47ae449384a25b4c90d67, type: 3}
       propertyPath: m_LocalScale.x
